@@ -1,0 +1,1012 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem,booktabs,microtype}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\setlength{\emergencystretch}{1em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}[lemma]{Proposition}
+\newtheorem{corollary}[lemma]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[lemma]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[lemma]{Remark}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\spanop}{span}
+\DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator{\TV}{TV}
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\K}{\mathcal K}
+\newcommand{\G}{\mathcal G}
+\newcommand{\Fm}{\mathcal F}
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prob}{\mathbb P}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\ket}[1]{\lvert#1\rangle}
+\newcommand{\bra}[1]{\langle#1\rvert}
+\newcommand{\Ncdf}{\Phi_{\mathrm N}}
+\newcommand{\Wminus}{W_3^-}
+\newcommand{\Wplus}{W_3^+}
+\newcommand{\eps}{\varepsilon}
+
+\title{No algorithm can tell how much memory\newline a repeated quantum channel needs}
+\author{Seth Douglas \and Nidhal Mghirbi}
+\date{October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+A device that applies a quantum channel over and over must release each output before the next input arrives. How much memory does it need? Suppose every fresh qubit the device receives is maximally mixed. In companion work we showed that the answer then turns on one set: the channels that a unitary with a finite, maximally mixed bath implements, exactly or in the limit. A channel in this set with a flat probe, an input that leaves its environment maximally mixed, can be served with sublinear memory. A channel outside the set needs linear memory at small error, however many qubits the device exchanges.
+
+No algorithm can decide on which side of this line a channel lies. A computable map sends each program to an explicit Schur channel with Gaussian-rational entries. If the program halts, logarithmic memory suffices; if it runs forever, linear memory is needed at an error computed from the program. The same line recasts Connes' embedding problem. It has a positive answer exactly when every factorizable channel with a flat probe can be served with sublinear memory; Schur channels already suffice.
+
+Just past the line, the cost switches on at the statistical scale. Take the qutrit Werner--Holevo family at distance $h/\sqrt n$ beyond its boundary point. Independent uses of the boundary channel imitate it with error tending to $2\Phi(h/2\sigma)-1$, where $\Phi$ is the standard normal distribution function and $\sigma=5\sqrt2/27$. We prove that no device drawing on purity that grows more slowly than $\sqrt n$ does better, whatever its memory.
+\end{abstract}
+
+\section{Introduction}\label{sec:intro}
+
+A channel specifies what a device does once. It does not specify what resources the device needs to keep doing it. Suppose a device must apply the same channel $n$ times and release each output before the next input arrives. It cannot collect the inputs and implement their joint channel at the end. A finite environment may accumulate correlations, lose its randomness, or need replacement. How much must the device keep, and can one tell in advance?
+
+We count three resources. The memory $Q$ is the number of qubits kept between uses. The exchange $J$ is the number of qubits handed over for good and replaced by fresh ones. The supplied purity $B=P+C$ is the purity of the initial memory and of all imports. The error is measured on the whole experiment, against an observer who chooses inputs adaptively and keeps quantum references. Ryb\'ar and Ziman introduced repeated use of one device without resets: one fixed unitary acts on a finite memory, and each use must induce the channel exactly on uncorrelated inputs~\cite{RybarZiman}. Here the unitaries may depend on the round, memory may be exchanged, inputs may be adaptive and entangled with references, and the error is approximate and measured on the whole experiment.
+
+\paragraph{The line.}
+Unless we say otherwise, every imported qubit is maximally mixed. The free building blocks are channels implemented by one unitary acting on the input and a finite bath that starts maximally mixed. Ryb\'ar and Ziman proposed such devices, with a reset after each use~\cite[Section~IV]{RybarZiman}. Let $\K_d$ be the closure of these channels on $M_d$. In companion work we proved that $\K_d$ is the dividing line~\cite[Theorem~3.2(b)]{Memory}, \cite[Theorem~4.1]{Law}. A channel in $\K_d$ with a \emph{flat probe}, an input that leaves its environment maximally mixed, can be served with sublinear memory. A channel outside $\K_d$ needs linear supplied purity at any exchange whenever its error is below its distance from $\K_d$, and hence linear memory. For unital channels the cost comes from immediate delivery: once outputs may wait in batches much longer than $\log n$, a unital channel needs purity rate zero~\cite[Theorem~3.5]{Law}. Section~\ref{sec:line} recalls these results. This paper asks where the line runs and what happens next to it.
+
+\paragraph{No algorithm can locate the line.}
+Our main result is that the line cannot be located by any algorithm (Theorem~\ref{thm:undecidable}). A computable map sends each program to an explicit Schur channel with Gaussian-rational entries. If the program halts, its channel has an exact finite tracial factorization and logarithmic memory suffices. If it runs forever, its channel lies at a distance $g_M>0$ outside $\K_d$, computed from the program, and every device needs linear memory at error $g_M/4$. The two branches use the same import and exchange contract, so no algorithm can decide whether memory grows logarithmically or linearly. The growth rate of the least memory is not computable (Corollary~\ref{cor:rate}), and neither is the growth rate of the smallest bath that sustains closed repeated use (Corollary~\ref{cor:closed}). The second settles a point left open in~\cite{ClosedMemory}.
+
+\paragraph{Connes' embedding problem.}
+The line also gives a memory form of Connes' embedding problem (Theorem~\ref{thm:connes}). It has a positive answer exactly when every factorizable channel with a flat probe can be served with sublinear memory, and Schur channels already suffice. The import condition matters: fresh pure imports serve any channel with constant memory. The static equivalence is due to Haagerup and Musat, who showed that Connes' problem has a positive answer exactly when every factorizable channel lies in $\K_d$, already through Schur channels~\cite[Theorems~3.6 and~3.7]{HM2015}. Our contribution is a flat-completion lemma: every matrix of unitary moments is a corner of one whose Schur channel has a flat probe, so the memory theorem applies to it. For gadget channels such a completion is in~\cite[Proposition~J.2]{Memory}. Since $\mathrm{MIP}^*=\mathrm{RE}$~\cite{MIP}, some factorizable channel with a flat probe needs linear memory at small error. One can be written down: run Theorem~\ref{thm:undecidable} on a program that provably never halts and apply the effective flat completion (Remark~\ref{rem:flat-undecidable}). The result has algebraic entries but astronomical size.
+
+\paragraph{Just past the line.}
+How does the cost switch on? Take the qutrit Werner--Holevo family, whose boundary point in $\K_3$ was found by Haagerup and Musat~\cite{HM2015}. At distance $h/\sqrt n$ beyond it, independent uses of the boundary channel imitate the target with error tending to $2\Ncdf(h/2\sigma)-1$, where $\sigma=5\sqrt2/27$. This is the classical value for a Gaussian shift~\cite{CopePirandola,WildeEtAl,vanderVaart}. We prove that no device supplied with $o(\sqrt n)$ purity does better, however large and correlated its memory, and whatever its exchange (Theorem~\ref{thm:edge}). With maximally mixed imports the same holds for memory $o(\sqrt n)$. For exact service, at unrestricted memory, the supplied purity grows linearly in the distance along this family but only quadratically along an explicit six-level Schur direction. Tensoring the two channels gives one boundary point with outward directions of both kinds, so the exact-service onset depends on the direction of departure, not only on the boundary point (Theorem~\ref{thm:onsets}).
+
+\paragraph{Relation to other work.}
+The dividing line, its purity floor and its group-profile refinements are proved in~\cite{Memory,Law}; the closed-device bath law is in~\cite{ClosedMemory}. Here we use them as stated.
+
+Steps (i) and (ii) of the proof of Theorem~\ref{thm:undecidable} combine two existing results: Mastel and Slofstra's compiler~\cite[Corollary~9.16]{MastelSlofstra}, which rests on $\mathrm{MIP}^*=\mathrm{RE}$~\cite{MIP} in the form of Natarajan and Zhang~\cite{NatarajanZhang}, and the self-referential device of Fanizza et al.~\cite[Section~4.2]{FanizzaEtAl}. Mastel and Slofstra note that their construction reduces the halting problem to approximate membership in the set of finite-dimensional quantum correlations. Together the two results give correlations that lie in that set when the program halts, and that are commuting-operator correlations far from it otherwise; we claim nothing for this beyond the single-matrix-algebra refinement of Lemma~\ref{lem:matrix-branch}. Undecidability of membership in the quantum correlation sets is known~\cite{Slofstra19,CoudronSlofstra,FuMillerSlofstra,MastelSlofstra}, and uncomputability results for channel capacities have recently appeared~\cite{BMZ}. What is new is the transfer to channels (Lemma~\ref{lem:transfer}) and its memory consequences; we know of no earlier statement that the growth of memory with the number of uses of a fixed channel is undecidable.
+
+The static characterization of $\K_d$ is due to Haagerup and Musat~\cite{HM2015} and to Musat and R\o rdam~\cite{MusatRordam21}. The Schur closure criterion is in~\cite[Proposition~2.8]{HM2011}, \cite[proof of Theorem~3.7]{HM2015} and~\cite[Proposition~3.9]{Musat}, with an elementary proof in~\cite{HarrisEtAl}. At the Werner boundary, the flat case of our bound for correlated devices is Haagerup and Musat's~\cite[Lemmas~5.4 and~5.5]{HM2015}. Optimal error exponents are known when an adversary picks each conditional law adaptively from fixed closed convex sets~\cite[Theorems~2 and~7]{BHLP}. Quantum local asymptotic normality holds for smoothly parametrized quantum Markov chains with fixed, identically prepared inputs~\cite{GutaKiukas,GirottiKiukasGuta}. Neither covers devices constrained only by a total supply of purity, at constant error. Stein exponents for testing a channel, including the qutrit Werner--Holevo channel, against the mixed-unitary set are known for parallel strategies~\cite{GhosalEtAl}.
+
+\paragraph{Organization.}
+Section~\ref{sec:model} fixes the model. Section~\ref{sec:line} recalls the line. Section~\ref{sec:undecidable} proves that it cannot be located. Section~\ref{sec:connes} gives the memory form of Connes' problem. Sections~\ref{sec:edge} and~\ref{sec:soft} treat the boundary. Section~\ref{sec:open} lists open questions. The appendices hold the undecidability construction, the energy certificate, the statistical comparison and the finite constructions.
+
+
+\section{Model and conventions}\label{sec:model}
+
+All entropies and logarithms are base $2$; $\ln$ is natural. Write $\tau_m=\Tr/m$. The normalized Choi state is
+\[
+ J(\Phi)=(\Phi\otimes\id)(\ket{\Omega_d}\bra{\Omega_d}),\qquad
+ \ket{\Omega_d}=d^{-1/2}\sum_{i=1}^d\ket{ii},
+\]
+and $d_J(\Phi,\Psi)=\norm{J(\Phi)-J(\Psi)}_1/2$. Half-diamond distance is $d_\diamond(\Phi,\Psi)=\norm{\Phi-\Psi}_\diamond/2$. In finite dimension,
+\begin{equation}\label{eq:distances}
+ d_J(\Phi,\Psi)\le d_\diamond(\Phi,\Psi)\le d\,d_J(\Phi,\Psi).
+\end{equation}
+
+\begin{definition}[Causal service]
+An $n$-round service has a $Q$-qubit memory in a fixed state $\beta_0$. In each round a prescribed unitary interacts with the fresh input and the memory, and the output is released before the next input arrives. Between rounds, prescribed memory qubits may be exported permanently and replaced by independent states. Exported registers never return. The observer knows the protocol and may choose inputs adaptively with arbitrary references. The error $\eps$ is the supremum half trace distance between its final states in the real and ideal experiments.
+\end{definition}
+
+The exchange $J$ counts replacement/export slots once, not both directions of traffic. Initial purity is $P=Q-S(\beta_0)$; imported purity is $C=\sum_s[q_s-S(\beta_s)]$. Total supplied purity is $B=P+C$. Every retained clock, flag and workspace qubit counts. There is no free reset, postselection or external random seed. Fixed time-dependent unitaries may be controlled by a counted reversible clock. Efficient synthesis is not required. For lower bounds, an independent import made during a round may be moved to the start of that round, and an export made during a round to its end. Neither move changes the experiment or the charges $P$ and $C$. Hence every purity lower bound in this paper, including the closure floor~\eqref{eq:floor}, also holds for services that import or export during a round.
+
+\begin{definition}[Finite-tracial closure and flat probe]
+A finite tracial channel on $M_d$ has the form
+\[
+ \Phi(X)=(\id\otimes\tau_m)[U(X\otimes I_m)U^*],\qquad U\in U(dm).
+\]
+Let $\K_d$ be the closure of all such channels. Finite tracial channels are the noisy operations of thermodynamics and Musat's $k$-noisy channels~\cite{Musat}. A \emph{factorizable} channel, in the sense of Anantharaman-Delaroche~\cite{AnantharamanDelaroche}, admits the same form with a finite von Neumann algebra and its faithful normal tracial state as ancilla~\cite[Theorem~2.2]{HM2011}. A channel of minimal Kraus rank $r$ has a \emph{flat probe} if an input state $\rho_*$ gives $\Phi^c(\rho_*)=I_r/r$ for a minimal complement. Equivalently, a purification of $\rho_*$ produces an output flat on its entire rank-$r$ support.
+\end{definition}
+
+Finite weighted mixtures and single finite tracial factors have the same closure: rational block replication approximates their weights~\cite[Proposition~3.8(ii)]{Musat}. The exact classes differ~\cite[Propositions~3.6 and~3.8(i)]{Musat}. For a flat probe, the maximal complementary entropy is $H=\log r$. We call $J\le\lfloor(n-1)\log r/2\rfloor$ the \emph{rank-rate schedule}. At vanishing error and sublinear memory and supplied purity, its asymptotic rate $H/2$ is optimal~\cite[Corollary~3.3(a)]{Memory}.
+
+
+\section{The line, and why immediacy causes it}\label{sec:line}
+
+We recall the results of~\cite{Memory,Law} that this paper uses. Write $\dist_J(\Phi,\K_d)$ for the normalized Choi distance from $\Phi$ to $\K_d$.
+
+\begin{theorem}[Closure law~{\cite[Theorem~4.1]{Law}}; part (b) is {\cite[Theorem~3.2(b)]{Memory}}]\label{thm:closure}
+Fix a channel $\Phi$ on $M_d$.
+\begin{enumerate}[label=(\alph*),itemsep=3pt]
+\item If $\Phi\in\K_d$ has a flat probe of rank $r\ge2$, then for every sequence $0<\eps_n\le1/16$ with $\log(1/\eps_n)=o(n)$ there are services with error at most $\eps_n$ and
+\[
+ Q_n=o(n),\quad C_n=0,\quad P_n\le Q_n,\quad
+ J_n\le\left\lfloor\frac{n-1}{2}\log r\right\rfloor.
+\]
+\item If $\Delta=\dist_J(\Phi,\K_d)>0$, every between-round service, at any exchange, satisfies
+\begin{equation}\label{eq:floor}
+ P+C\ge\frac{n(\Delta-\eps)_+^2}{2\ln2},\qquad
+ Q+C\ge\frac{n(\Delta-\eps)_+^2}{2\ln2}.
+\end{equation}
+\end{enumerate}
+\end{theorem}
+
+Part~(b) is the purity floor of~\cite[Theorem~3.2(b)]{Memory}. Its mechanism is local tracialization: a use that raises the bath entropy only slightly, on a maximally mixed input, is close to a mixture of finite tracial factorizations~\cite[Lemma~5.4]{Memory}, \cite[Lemma~4.5]{Law}. Part~(a) repairs a finite approximant to an exact dilation of the target and streams it along paths, so that small entropy production becomes a small memory coefficient while all imports stay maximally mixed~\cite[Appendix~B]{Law}.
+
+\paragraph{Immediacy is the cause.}
+The floor in part~(b) is a cost of releasing each output at once. For every unital channel, purity rate zero is achievable once outputs may wait in batches much longer than $\log n$~\cite[Theorem~3.5]{Law}. At the level of rates, for an implementation of $\Phi^{\otimes n}$ that receives all $n$ inputs together, this is the vanishing of Faist, Berta and Brand\~ao's thermodynamic capacity for unital channels with trivial Hamiltonians~\cite{FaistBertaBrandao}, \cite[Equation~(4.9) and Theorem~7.1]{FaistBertaBrandao2021}. The qutrit Werner--Holevo channel $\Wminus$ lies at distance $2/27$ outside $\K_3$, half the cb-distance $4/27$ to the factorizable channels computed by Haagerup and Musat~\cite[Theorem~5.6(2)]{HM2015}. It shows the whole transition. Under immediate release it needs $\log_2 3$ bits of purity per use as the error vanishes; released together, its $n$ uses need $O(\log n)$ bits in total; at error $n^{-2}$ the change comes at batches of about $\log n$~\cite[Theorems~3.1, 3.3 and~3.4]{Law}.
+
+\paragraph{Exact repetition.}
+The line also governs Ryb\'ar and Ziman's exact, finite-memory repeatability. A channel that one finite memory repeats exactly forever, without resets, is a finite mixture of finite tracial factorizations, and so lies in $\K_d$~\cite[Proposition~4.6]{Law}. Ryb\'ar and Ziman asked whether unital channels that are not random-unitary can be repeatable~\cite[Section~IV]{RybarZiman}. Some are: a Schur channel of Haagerup and Musat~\cite[Example~3.3]{HM2011} has a catalytic dilation by Lie, Son, Boes, Ng and Wilming~\cite[Proposition~15]{LSBNW}. The qutrit $\Wminus$, by contrast, needs memory dimension at least $3^n$ for $n$ uses~\cite[Proposition~4.6]{Law}.
+
+\paragraph{Inside the line.}
+Within $\K_d$ the memory depends on how well the channel's group relations can be approximated by matrices. For canonical gadget channels, memory at fixed error is at most logarithmic, divergent but sublinear, or linear, and at high precision it equals the cost of the best single use up to squared logarithms~\cite[Theorems~5.1 and~6.5]{Law}. Entanglement in nonlocal games depends in a similar way on finite-dimensional approximation: for linear system games it is controlled by the hyperlinear profile of the solution group~\cite{SlofstraVidick}. We do not use these refinements below.
+
+
+\section{No algorithm can locate the line}\label{sec:undecidable}
+
+We use the causal services of Section~\ref{sec:model}: unitaries may depend on the round, each output leaves before the next input, exchange happens between rounds, the initial deficit $P$ is charged, and the error is the complete adaptive error. For a channel $\Phi$ on $M_d$ let $Q_{\min}(\Phi,n,\eps)$ be the least memory of an $n$-round service with maximally mixed imports ($C=0$), exchange $J\le nd$ and error at most $\eps$. Note that $P\le Q$ always holds.
+
+\begin{theorem}[Undecidable memory growth]\label{thm:undecidable}
+There is a total computable map $M\mapsto(d_M,B_M,g_M)$ from Turing machines, run on the empty tape, with the following properties. Here $d_M=1+2q_Ma_M\ge5$ for integers $q_M,a_M$ computed along the way, $B_M$ is a positive semidefinite $d_M\times d_M$ matrix with entries in $\mathbb Q(i)$ and unit diagonal, and
+\[
+ g_M=\frac{1}{256^2\,a_M^6\,d_M}.
+\]
+The Schur channel $\Phi_M(X)=B_M\circ X$ is unital and factorizable through a finite von Neumann algebra~\cite[Proposition~2.8]{HM2011}. Put $\eps_M=g_M/4$.
+\begin{enumerate}[label=(\alph*),itemsep=3pt]
+\item If $M$ halts, $\Phi_M$ has an exact finite tracial factorization, and $Q_{\min}(\Phi_M,n,\eps_M)=O(\log n)$.
+\item If $M$ runs forever, $\dist_J(\Phi_M,\K_{d_M})\ge g_M$. Every service of $\Phi_M$ with maximally mixed imports and error at most $\eps_M$ has, at any exchange,
+\[
+ Q\ge\frac{9g_M^2}{32\ln2}\,n,
+\]
+and $Q_{\min}(\Phi_M,n,\eps_M)\le n\lceil\log d_M\rceil$.
+\end{enumerate}
+Consequently no algorithm decides, for every channel in this family, whether its least memory grows logarithmically or linearly.
+\end{theorem}
+
+The dimension, the gap, the error and all constants depend on $M$; the constant in part~(a) depends on a bath dimension that is not computable from $M$. Nothing is claimed at a fixed dimension or a universal error. Part~(a) is an upper bound, not a matching lower bound. The input is an exact description of the channel, not a black box. The reduction also works with any error policy that eventually falls below $g_M/4$, for example $\eps_n=\min(1/16,1/n)$.
+
+The proof composes three steps; Appendix~\ref{app:undecidable} gives it in full.
+\begin{enumerate}[label=(\roman*),itemsep=2pt]
+\item \emph{A compiler.} Mastel and Slofstra's polynomial-time compiler~\cite[Corollary~9.16]{MastelSlofstra}, built on $\mathrm{MIP}^*=\mathrm{RE}$~\cite{MIP,NatarajanZhang}, turns a program description into a nonlocal game and a synchronous correlation with rational entries. If the program halts, the correlation is a synchronous quantum correlation that wins the game with probability one; we show, from the internals of their proof, that it is then realized with normalized trace on a single matrix algebra (Lemma~\ref{lem:matrix-branch}). If the program runs forever, every finite-dimensional strategy wins with probability at most $1/2$.
+\item \emph{Self-reference.} A program that dovetails $M$ with an exact search of the hierarchy of Navascu\'es, Pironio and Ac\'in~\cite{NPA}, applied to its own correlation through the recursion theorem, makes every output a valid commuting-operator correlation. The self-referential device, a machine that computes its own instance and halts at the first level of the hierarchy that refutes it, is from the explicit-example construction of Fanizza, Kroell, Mehta, Paddock, Rochette, Slofstra and Zhao~\cite[Section~4.2]{FanizzaEtAl}, where it is applied to the commuting-operator value of a game. We apply it to membership of a correlation in the commuting-operator set, uniformly in $M$.
+\item \emph{A quantitative transfer.} The correlation becomes a unitary-moment matrix $B_M$. A finite tracial channel close to $\Phi_M$ would yield a finite strategy winning with probability above $1/2$ (Lemma~\ref{lem:transfer}). This gives the gap $g_M$.
+\end{enumerate}
+The operational branches then follow from known resource theorems: an exact finite factor gives logarithmic memory~\cite[Theorem~6.1]{Memory}, and the purity floor of Theorem~\ref{thm:closure}(b) gives the linear lower bound. Ryb\'ar and Ziman's $n$-cell device gives the linear upper bound~\cite{RybarZiman}.
+
+\begin{corollary}[The memory rate is not computable]\label{cor:rate}
+Let $q(\Phi,\eps)=\liminf_n Q_{\min}(\Phi,n,\eps)/n$. On the family of Theorem~\ref{thm:undecidable}, $q(\Phi_M,\eps_M)=0$ if $M$ halts and $q(\Phi_M,\eps_M)\ge9g_M^2/(32\ln2)$ otherwise. No algorithm computes $q(\Phi_M,\eps_M)$ to within $g_M^2/16$ for every $M$. The same holds for the zero-error limit $\lim_{\eps\downarrow0}q(\Phi_M,\eps)$.
+\end{corollary}
+
+\begin{corollary}[The closed-bath rate is not computable]\label{cor:closed}
+A closed device keeps one bath and never exchanges it. The least bath-dimension rate of closed repeated use of $\Phi$ at vanishing error is $(H(\Phi)+\kappa(\Phi))/2$, where $H(\Phi)$ is the largest entropy of a complementary output and $\kappa$ is the purity cost~\cite[Theorem~2.1]{ClosedMemory}. On the family of Theorem~\ref{thm:undecidable}, $\kappa(\Phi_M)=0$ if $M$ halts and $\kappa(\Phi_M)\ge g_M^2/(2\ln2)$ otherwise~\cite[Theorem~3.2(a)]{Memory}. Since $H(\Phi_M)$ can be computed to any precision, no algorithm computes the closed-bath rate of $\Phi_M$ to within $g_M^2/(16\ln2)$ for every $M$.
+\end{corollary}
+
+\begin{corollary}[An explicit Schur witness]\label{cor:explicit-schur}
+Apply Theorem~\ref{thm:undecidable} to a machine that provably runs forever. It produces an explicit Schur channel with entries in $\mathbb Q(i)$, factorizable, at Choi distance at least $g_M$ from $\K_{d_M}$, whose repeated use with maximally mixed imports needs linear memory at error below $g_M$. Its size is astronomical.
+\end{corollary}
+
+\begin{remark}[Full Choi rank]\label{rem:full-rank}
+Hardness does not come from a singular Choi matrix. Mix in complete depolarization: $\Omega_M=(1-\eta)\Phi_M+\eta\,\mathrm{Dep}_d$ with $\eta=g_M/4$. Its Choi state has full rank. If $M$ halts, rational mixtures of finite factors combine exactly in one flat bath, so $\Omega_M$ still has an exact finite tracial factorization. If $M$ runs forever, $\dist_J(\Omega_M,\K_d)\ge3g_M/4$, and at error $g_M/4$ every service with maximally mixed imports has $Q\ge g_M^2n/(8\ln2)$.
+\end{remark}
+
+\begin{remark}[Flat probes]\label{rem:flat-undecidable}
+The Schur channel $\Phi_M$ need not have a flat probe. The flat completion of Section~\ref{sec:connes} can be carried out effectively, with algebraic rather than rational entries (Appendix~\ref{app:undecidable}). The completed channels fall under both parts of Theorem~\ref{thm:closure}: sublinear memory at the rank rate if $M$ halts, linear memory at any exchange otherwise.
+\end{remark}
+
+
+\section{Connes' embedding problem as a memory statement}\label{sec:connes}
+
+\subsection{Unitary moments and flat probes}
+
+Let $\G_N$ consist of matrices $X_{ij}=\tau(V_i^*V_j)$ for unitaries $V_1,\dots,V_N$ in a finite tracial von Neumann algebra. Let $\Fm_N$ be the closure of the corresponding moment matrices of unitaries in matrix algebras. These are correlation matrices. Kirchberg's criterion says
+\begin{equation}\label{eq:kirchberg}
+ \text{Connes' embedding problem has a positive answer}
+ \quad\Longleftrightarrow\quad
+ \G_N=\Fm_N\quad\text{for every }N
+\end{equation}
+\cite[Proposition~4.6]{Kirchberg}; see also~\cite[Section~1]{DJ}. On the channel side, Haagerup and Musat showed that a factorizable channel lies in $\K_N$ exactly when it has an ancilla that embeds in a tracial ultrapower of the hyperfinite $\mathrm{II}_1$ factor, and hence that Connes' problem has a positive answer exactly when every factorizable channel on $M_N$, $N\ge3$, lies in $\K_N$~\cite[Theorems~3.6 and~3.7]{HM2015}. Musat and R\o rdam identified this closure with the channels given by hyperlinear traces on the free product $M_N*_{\mathbb C}M_N$ and added equivalent forms on the trace side~\cite[Proposition~3.2(ii), Theorem~2.10 and Corollary~3.4]{MusatRordam21}; the closures of single-matrix and finite-dimensional factorizations coincide~\cite[Proposition~3.8(ii)]{Musat}.
+
+For a correlation matrix $X\in\G_N$ the Schur channel $S_X(A)=X\circ A$ is factorizable through $U=\sum_ie_{ii}\otimes V_i^*$~\cite[Proposition~2.8]{HM2011}. The map $\ket i\mapsto\ket i\otimes V_i^*\xi_\tau$ is a Stinespring isometry, so the minimal environment is the span of the $V_i^*$ in tracial $L^2$ and
+\[
+ S_X^c(\rho)=\sum_i\rho_{ii}\ket{V_i^*}\bra{V_i^*}.
+\]
+The complement depends only on the diagonal of $\rho$, and $a\mapsto a^*$ is antiunitary on this space. Consequently $S_X$ has a flat probe precisely when, writing $r=\rank X$, there is a probability vector $p$ with
+\begin{equation}\label{eq:tight}
+ \sum_i p_i\ket{V_i}\bra{V_i}=\frac{P_{\mathcal V}}r,
+ \qquad \mathcal V=\operatorname{span}\{V_i\}.
+\end{equation}
+We call $X$ \emph{tightly weightable}: some weighting of its Gram vectors is a tight frame, so some input leaves the environment maximally mixed. The condition depends only on the Gram matrix: if $X=F^*F$ with unit columns spanning $\C^r$, it reads $F\operatorname{diag}(p)F^*=I_r/r$, which is scalability of the frame~\cite{Scalable}. The completion below keeps the stronger requirement that every added vector is a unitary in a finite tracial algebra.
+
+\begin{lemma}[Schur closure criterion]\label{lem:schur}
+Let $X\in M_N$ be a correlation matrix. Then $S_X\in\K_N$ if and only if $X\in\Fm_N$~\cite[Proposition~2.8 and proof of Theorem~6.2]{HM2011}, \cite[Theorem~3.6 and proof of Theorem~3.7]{HM2015}, \cite[Proposition~3.9(iii)]{Musat}; an elementary proof is in~\cite[Theorems~3.9 and~3.10]{HarrisEtAl}. Quantitatively (our estimate; compare~\cite[Theorem~3.9]{HarrisEtAl}), if a finite tracial channel $\Gamma$ with bath dimension $m$ satisfies $d_\diamond(\Gamma,S_X)\le\delta$, there are $V_i\in U(m)$ with
+\[
+ |X_{ij}-\tau_m(V_i^*V_j)|\le2\delta+2\sqrt\delta.
+\]
+At Choi error $\eta$, one may use $\delta=N\eta$.
+\end{lemma}
+
+\begin{proof}
+Moment convergence gives channel convergence in this fixed finite dimension. Conversely, write the factorizing unitary of $\Gamma$ in blocks $U_{ij}$. Since $S_X(e_{ii})=e_{ii}$ and $\Gamma(e_{ii})$ is within trace distance $\delta$ of $e_{ii}$, we have $1-\tau_m(U_{ii}^*U_{ii})\le\delta$. Each $U_{ii}$ is a contraction, and a unitary polar extension $W_i$ satisfies, by $(I-h)^2\le I-h^2$ for $0\le h\le I$,
+\[
+ \norm{U_{ii}-W_i}_2^2
+ =\tau_m[(I-|U_{ii}|)^2]\le\delta.
+\]
+The $(i,j)$ output entry on $e_{ij}$ differs from $X_{ij}$ by at most $2\delta$. Replacing the two diagonal bath blocks by $W_i,W_j$ changes its trace by at most $2\sqrt\delta$. Choose $V_i=W_i^*$. Letting $\delta\to0$ gives $X\in\Fm_N$; \eqref{eq:distances} gives the Choi form.
+\end{proof}
+
+\subsection{A flat completion of every unitary frame}
+
+\begin{lemma}[Flat completion]\label{lem:completion}
+Let $X\in\G_N$ have rank $r$. There are $0\le s\le r-1$, an integer $K\ge1$ and a tightly weightable $X'\in\G_{N'}$, $N'=N+2sK$, of rank $r+sK$, with strictly positive tight weights, containing $X$ as its leading principal submatrix. If $X$ is realized in a finite tracial algebra $\mathcal M$, then $X'$ is realized in $\mathcal M\otimes\ell^\infty((\mathbb Z/2)^L)$ for some $L$; a realization in $M_m$ gives one in $M_{m2^L}$. If $X\notin\Fm_N$, then $X'\notin\Fm_{N'}$.
+\end{lemma}
+
+\begin{proof}
+Choose arbitrary positive weights $p_i$ on a realizing family $V_i$ and set
+\[
+ S=\sum_i p_i\ket{V_i}\bra{V_i},\qquad c=\norm S,
+ \qquad cP_{\mathcal V}-S=\sum_{\ell=1}^s\mu_\ell\ket{e_\ell}\bra{e_\ell},
+\]
+where $\mu_\ell>0$ and the $e_\ell$ are orthonormal. They are bounded algebra elements because they are finite linear combinations of the $V_i$. If $s=0$, the frame is already tight. Otherwise take an integer
+\[
+ K\ge\max\{1,\max_\ell\norm{e_\ell}_\infty^2\},\qquad
+ \alpha_\ell^2=\frac{\mu_\ell}{Kc+\mu_\ell},\qquad x_\ell=\alpha_\ell e_\ell.
+\]
+Then $\norm{x_\ell}_\infty^2\le K\mu_\ell/(Kc+\mu_\ell)<\mu_\ell/c\le1$. In a finite von Neumann algebra the polar partial isometry extends to a unitary. Write $x_\ell=v_\ell H_\ell$ and put
+\[
+ U_\ell^\pm=v_\ell e^{\pm i\arccos H_\ell},\qquad
+ y_\ell=\frac{U_\ell^+-U_\ell^-}{2}
+       =iv_\ell\sqrt{I-H_\ell^2}.
+\]
+Thus $x_\ell=(U_\ell^++U_\ell^-)/2$ and $\norm{y_\ell}_2^2=1-\alpha_\ell^2$. No commutation between $x_\ell$ and $y_\ell$ is needed.
+
+Choose $L$ with $2^L-1\ge sK$ and assign distinct nontrivial characters $\chi_{\ell,k}$ of $(\mathbb Z/2)^L$, globally over all pairs $(\ell,k)$. In the tensor-product algebra use
+\[
+ V_i\otimes1,\qquad
+ w_{\ell,k}^\pm=x_\ell\otimes1\pm y_\ell\otimes\chi_{\ell,k}.
+\]
+Each character is $\pm1$, so pointwise $w_{\ell,k}^\pm$ is one of $U_\ell^\pm$ and is unitary. The vectors $b_{\ell,k}=y_\ell\otimes\chi_{\ell,k}$ are pairwise orthogonal and orthogonal to the original algebra tensored with $1$. This follows from orthogonality and zero mean of the characters, regardless of inner products between the $y_\ell$.
+
+Give each member of a pair the weight $q_\ell=c/[2(1-\alpha_\ell^2)]$. Pairing the two signs cancels the cross terms. The completed frame operator is
+\[
+ S+\sum_\ell2Kq_\ell\alpha_\ell^2\ket{e_\ell}\bra{e_\ell}
+   +\sum_{\ell,k}2q_\ell\ket{b_{\ell,k}}\bra{b_{\ell,k}}.
+\]
+The exact identities
+\[
+ 2Kq_\ell\alpha_\ell^2=\mu_\ell,
+ \qquad 2q_\ell(1-\alpha_\ell^2)=c
+\]
+make this $cP_{\mathcal V'}$, with $\dim\mathcal V'=r+sK$. Its trace equals the sum of all weights, since all frame vectors are unitaries of $L^2$ norm one. Dividing by $c(r+sK)$ therefore gives strictly positive probability weights and \eqref{eq:tight}. The resulting Gram matrix has size $N+2sK$ and contains $X$ as its leading principal submatrix. Restriction of matrix-unitary moment matrices to that submatrix is continuous and preserves their class. Hence $X'\in\Fm_{N'}$ would imply $X\in\Fm_N$.
+\end{proof}
+
+The completion is effective for algebraic $X$. Write $e_\ell=\sum_ic_{\ell i}V_i$. Then the choice
+\[
+ K=\max_\ell\Bigl\lceil\Bigl(\sum_i|c_{\ell i}|\Bigr)^2\Bigr\rceil
+\]
+is valid in every realization, and every entry of $X'$ is an algebraic function of $X$ (Appendix~\ref{app:undecidable}).
+
+\subsection{The memory equivalence}
+
+Call a service \emph{sublinear} if it is a between-round service with maximally mixed imports and memory $Q_n=o(n)$.
+
+\begin{theorem}[Connes' embedding problem and repeated-use memory]\label{thm:connes}
+The following are equivalent.
+\begin{enumerate}[label=(\alph*),itemsep=3pt]
+\item Connes' embedding problem has a positive answer.
+\item Every factorizable channel with a flat probe of rank $r\ge2$ has sublinear services with exchange $J\le\lfloor(n-1)\log r/2\rfloor$, for every error sequence $0<\eps_n\le1/16$ with $\log(1/\eps_n)=o(n)$.
+\item For every $N$ and every tightly weightable $X\in\G_N$ of rank at least two, $S_X$ has sublinear services at every fixed error $0<\eps\le1/16$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Under a positive answer every factorizable channel lies in $\K_d$, by Haagerup and Musat~\cite[Theorems~3.6 and~3.7]{HM2015}; their Theorem~3.6 also handles system dimensions below three. Theorem~\ref{thm:closure}(a) proves (a)$\Rightarrow$(b). A fixed error satisfies $\log(1/\eps)=o(n)$, and the flat-probe characterization~\eqref{eq:tight} gives (b)$\Rightarrow$(c).
+
+For the converse suppose Connes' problem has a negative answer. By~\eqref{eq:kirchberg} some $X_0\in\G_N$ lies outside $\Fm_N$. Lemma~\ref{lem:completion} gives a tightly weightable completion $X$ still outside its matrix-moment closure. Its rank is at least three: every unitary-moment matrix of rank at most two lies in $\Fm_N$~\cite[Proposition~2.10]{DJ}. Lemma~\ref{lem:schur} puts $S_X$ outside $\K_{N'}$, at some distance $\Delta>0$. Choose $0<\eps<\min(\Delta,1/16)$. Theorem~\ref{thm:closure}(b) with $C=0$ gives linear memory, contradicting (c). This follows Haagerup and Musat's proof of~\cite[Theorem~3.7]{HM2015}, with Lemma~\ref{lem:completion} inserted.
+\end{proof}
+
+\begin{corollary}[Linear memory for a factorizable Schur channel]\label{cor:connes-negative}
+Some tightly weightable $X\in\G_N$ has $\Delta=\dist_J(S_X,\K_N)>0$, and every such $X$ has rank at least three. Every between-round service of $S_X$ with maximally mixed imports and error $\eps<\Delta$ has, at any exchange,
+\[
+ Q_n\ge\frac{n(\Delta-\eps)^2}{2\ln2}.
+\]
+\end{corollary}
+
+\begin{proof}
+Connes' problem is equivalent to Tsirelson's problem~\cite{Kirchberg,Fritz,JungeEtAl,Ozawa}, and $\mathrm{MIP}^*=\mathrm{RE}$~\cite{MIP} answers the latter in the negative. So some $X_0\in\G_N$ lies outside $\Fm_N$, and $S_{X_0}$ is factorizable but outside $\K_N$~\cite[Corollary~3.11]{Musat}. The second half of the proof of Theorem~\ref{thm:connes} gives the rest.
+\end{proof}
+
+The import restriction is essential: fresh pure imports serve any channel with constant memory, by moving the environment out after each use. The static content of this section is known: the characterization of $\K_d$~\cite{HM2015,MusatRordam21}, the Schur closure criterion~\cite{HM2011,HM2015,Musat,HarrisEtAl}, and a factorizable Schur channel outside the closure~\cite[Corollary~3.11]{Musat}. The memory form without flat probes is in~\cite[Corollary~F.3]{Memory}, and a flat completion of gadget channels in~\cite[Proposition~J.2]{Memory}. What is new is the flat completion of every unitary-moment matrix, which brings every witness under both halves of the closure law, and the resulting two-sided memory equivalence.
+
+\paragraph{Explicit witnesses.}
+The witness in Corollary~\ref{cor:connes-negative} need not be abstract. Theorem~\ref{thm:undecidable}, applied to a machine that provably never halts, outputs an explicit Schur channel with entries in $\mathbb Q(i)$ outside the closure (Corollary~\ref{cor:explicit-schur}); after effective flat completion it has a flat probe and algebraic entries. Its size is astronomical. At the level of correlations this witness is an explicit rational synchronous commuting-operator correlation that is not a limit of finite-dimensional ones, obtained from~\cite[Corollary~9.16]{MastelSlofstra} and~\cite[Section~4.2]{FanizzaEtAl}; Ji et al.\ noted that their constructive proof may lead to explicit examples~\cite{MIP}. Conditional on recent preprints, a flat-probe gadget channel on $M_{108364}$, built from a $43$-generator presentation of~\cite{RationalChannels}, lies at Choi distance greater than $2^{-38}\delta_{\mathrm{WZ}}^2$ from the closure~\cite[Proposition~5.5]{Law}. Here $\delta_{\mathrm{WZ}}=2^{-2^{2^{1122000}}}$ is the tolerance that~\cite[Theorem~D.4]{RationalChannels} obtains for this presentation by Wang and Zhi's method~\cite{WangZhi}. An unconditional witness of modest size, or any witness with a usable gap, remains open.
+
+
+\section{The statistical edge of the closure}\label{sec:edge}
+
+\paragraph{Vocabulary.}
+A \emph{contact} is a unitary $U$ on system and bath; with a bath \emph{source} $\rho$ it implements $X\mapsto(\id\otimes\Tr)[U(X\otimes\rho)U^*]$. A \emph{support test} sends one half of $\ket{\Omega_3}$ through the channel and measures whether output and reference lie in the antisymmetric subspace. The antisymmetric outcomes, counted over the rounds, form the \emph{score}. \emph{Padding} is the purity paid when a bath whose dimension is not a power of two is embedded in qubits. An \emph{outward ray} is an affine path $\Phi_0+tV$, $t>0$, that starts on the boundary of the closure and leaves it. A point of the closure is \emph{uniquely exposed} if some functional that is nonpositive on the closure vanishes there and nowhere else on it.
+
+\subsection{The Werner boundary and the score envelope}
+
+On $M_3$ define
+\[
+ \Wminus(X)=\frac{\Tr(X)I-X^T}{2},\qquad
+ \Wplus(X)=\frac{\Tr(X)I+X^T}{4}.
+\]
+$\Wminus$ is the Werner--Holevo channel~\cite{WernerHolevo}. Up to a unitary change of basis it is Landau and Streater's qutrit counterexample to the quantum Birkhoff conjecture~\cite{LandauStreater}, and it is not factorizable~\cite[Example~3.1]{HM2011}. The Choi states of $\Wminus$ and $\Wplus$ are $(I-F)/6$ and $(I+F)/12$, with orthogonal antisymmetric and symmetric supports. Set
+\begin{equation}\label{eq:werner-family}
+ p=\frac{25}{27},\quad \sigma=\sqrt{p(1-p)}=\frac{5\sqrt2}{27},\qquad
+ \Theta_\delta=(p+\delta)\Wminus+(1-p-\delta)\Wplus.
+\end{equation}
+This is the segment studied by Mendl and Wolf~\cite{MendlWolf} and by Haagerup and Musat~\cite[Sections~5 and~6]{HM2015}.
+For a channel $\Gamma$ on $M_3$, its \emph{antisymmetric weight} $h_W(\Gamma)=\Tr[P_-J(\Gamma)]$, with $P_-=(I-F)/2$, is the probability of the antisymmetric outcome in a support test. Haagerup and Musat showed that every factorizable channel on $M_3$ has $h_W\le p$~\cite[Lemmas~5.4 and~5.5]{HM2015}, and hence so does every channel in $\K_3$, since the factorizable channels form a closed set~\cite[Remark~1.4(b)]{HM2011}. They also showed that $\Theta_0$ is realized exactly by the interaction $U_0=F-2\ket{\Omega_3}\bra{\Omega_3}$ with a flat qutrit bath~\cite[Theorem~5.6(1)]{HM2015}; this locates the boundary point of the Werner segment~\cite[Corollary~5.7]{HM2015}. Since $h_W(\Theta_\delta)=p+\delta$, the projection $P_-$ and the point $\Theta_0$ give
+\[
+ \dist_J(\Theta_\delta,\K_3)=d_\diamond(\Theta_\delta,\K_3)=\delta,
+ \qquad 0\le\delta\le1-p.
+\]
+At $\delta=1-p$ this is~\cite[Theorem~5.6(2)]{HM2015} in half-diamond normalization.
+
+The matrix input to the statistical theorem is a dissipative score estimate. With blocks $u_{ij}$ of any $U\in U(3m)$, let
+\begin{align*}
+ T_U(X)&=\frac13\sum_{i,j}u_{ij}Xu_{ij}^*,\\
+ M_U(X)&=\frac16\sum_{i<j}(u_{ij}-u_{ji})X(u_{ij}-u_{ji})^*,\qquad
+ Q_U=M_U^*(I)-pI.
+\end{align*}
+$M_U$ is the antisymmetric branch of a support test acting on the bath, and $T_U$ is bistochastic.
+
+\begin{theorem}[Dimension-independent score envelope]\label{thm:envelope}
+For every bath dimension $m$, every $U\in U(3m)$ and every Hermitian $X$ on the bath,
+\begin{equation}\label{eq:energy}
+ \Tr(X^2Q_U)\le\frac35\left[\Tr X^2-\Tr(T_U X)^2\right].
+\end{equation}
+The traces are unnormalized. The same holds with $U$ replaced by $U^*$.
+\end{theorem}
+
+At $X=I$ the right side vanishes, and \eqref{eq:energy} says that every contact with a flat bath implements a channel of antisymmetric weight at most $p$. That case is Haagerup and Musat's bound~\cite[Lemmas~5.4 and~5.5]{HM2015}, which holds for every tracial von Neumann algebra ancilla, hence for every factorizable channel. Theorem~\ref{thm:envelope} extends it to a quadratic form in bath operators that are not flat; this extension is what controls a correlated memory. Appendix~\ref{app:energy} proves the theorem from an exact rational sum-of-squares certificate and derives from it a Schatten-norm contraction, also uniform in the bath (Lemma~\ref{lem:schatten}). The constant $3/5$ is sufficient, not optimal.
+
+\subsection{The critical window}
+
+\begin{theorem}[Werner critical window]\label{thm:edge}
+\begin{enumerate}[label=(\alph*),itemsep=4pt]
+\item If $\delta_n\sqrt n\to h\ge0$, every causal service of $n$ uses of $\Theta_{\delta_n}$ with $B_n=P_n+C_n=o(\sqrt n)$ satisfies
+\begin{equation}\label{eq:critical}
+ \liminf_{n\to\infty}\eps_n\ge2\Ncdf\left(\frac{h}{2\sigma}\right)-1.
+\end{equation}
+Memory and exchange are unrestricted. The bound is attained asymptotically with $Q=O(\log n)$, $J=O(n\log n)$ and $P=C=0$.
+\item Fix a bounded signed piecewise-constant function $b$ on $[0,1]$. In round $k$ let the target be $\Theta_{\sigma b(k/n)/\sqrt n}$. For all services with $B_n=o(\sqrt n)$,
+\begin{equation}\label{eq:waveform}
+ \liminf\eps_n\ge2\Ncdf\left(\frac{\norm{b_+}_{L^2}}2\right)-1.
+\end{equation}
+A matching service has $Q=O(\log n)$, $J=O(n\log n)$, $C=0$ and $P=O(\log n)$. The target varies with the round in this clause.
+\item If $\delta_n\to0$, $\delta_n\sqrt n\to\infty$ and $B_n=o(n\delta_n)$, then $\eps_n\to1$.
+\end{enumerate}
+\end{theorem}
+
+\paragraph{The same window for memory.}
+With maximally mixed imports, $C=0$ and $P\le Q$. For such services, (a) and (c) therefore hold with $B_n$ replaced by the memory $Q_n$. Memory $o(\sqrt n)$ cannot beat the critical curve, which memory $O(\log n)$ attains, and, with such imports, memory $o(n\delta_n)$ fails completely above the window.
+
+\paragraph{What the curve means.}
+The Gaussian benchmark is classical. Adaptive discrimination of channels with Werner Choi states reduces to their commuting Choi states~\cite[Section~IV]{CopePirandola}. Writing $\Theta_\delta$ as one coin-controlled interaction with the classical environment state $\operatorname{diag}(p+\delta,1-p-\delta)$ makes the family environment-parametrized, and the orthogonal supports of $J(\Wminus)$ and $J(\Wplus)$ make it environment-seizable~\cite[Definition~36]{WildeEtAl}: one support test returns the $\Wminus/\Wplus$ coin of a round. By~\cite[Proposition~35 and Theorem~37]{WildeEtAl}, the error of $n$ independent uses against adaptive observers equals the total variation between the coin-word laws. Le Cam's theory of local alternatives for Bernoulli trials~\cite[Chapters~7 and~15]{vanderVaart} shows that this total variation tends to the right side of~\eqref{eq:critical}, so independent uses of the boundary channel attain it. The inequality~\eqref{eq:critical} for correlated devices is the new part of Theorem~\ref{thm:edge}.
+
+The closure floor cannot see this window. At $\delta=h/\sqrt n$ the bound \eqref{eq:floor} is at most $h^2/(2\ln2)$, and at a fixed positive error it vanishes once $\delta<\eps$. Theorem~\ref{thm:envelope} supplies the missing control.
+
+The converse allows devices whose score records are neither independent nor Werner. Let $S_k$ count the antisymmetric outcomes of the first $k$ support tests on fresh inputs, and put
+\[
+ X_n(u)=\frac{S_{\lfloor nu\rfloor}-p\lfloor nu\rfloor}{\sigma\sqrt n},\qquad
+ Y_n=e^{X_n},\qquad 0\le u\le1.
+\]
+After each support test the bath evolves by $M_U$ or by $T_U-M_U$. Theorem~\ref{thm:envelope}, together with the source deficit, bounds every nonnegative weighted prefix of this record (Appendix~\ref{app:prefix}). Every subsequential limit $Y$ of $Y_n$, regularized as in that appendix, obeys
+\begin{equation}\label{eq:power-sm}
+ e^{-j^2t/2}Y_t^j\ \text{is a supermartingale for every integer }j\ge1.
+\end{equation}
+On the event that $Y$ is positive and continuous with the bracket of a Brownian path, $\log Y=\log Y_0+W+K$ with $W$ Brownian and $K$ nonincreasing (Lemma~\ref{lem:path}). Its increments are therefore dominated by Brownian increments. This one-sided chronological constraint gives the sharp error. It does not infer correct service from one-round marginals.
+
+For a waveform, the separating score uses the nonnegative weights $b_+$, and a nonincreasing correction cannot raise that score. The negative part of $b$ is therefore irrelevant to the optimum, which yields \eqref{eq:waveform}. For deterministic drifts this would be Gaussian testing of $b$ against the closed convex cone of nonpositive drifts, where the half-space test at the closest point, here $-b_-$, is exactly optimal (see~\cite[Section~2.3.1]{GJN}, stated there for compact convex sets). A correlated device may produce random, adapted drifts; Lemma~\ref{lem:path} shows that the same half-space test still controls them. For example, $b=\lambda$ on $[0,1/2)$ and $b=-\lambda$ on $[1/2,1]$ has zero integrated drift but error $2\Ncdf(\lambda/(2\sqrt2))-1$.
+
+\paragraph{Matching finite devices.}
+The boundary contact of Haagerup and Musat~\cite[Theorem~5.6(1)]{HM2015} has bath dimension three. Copies fit into a fully flat dyadic bath $D=2^q$, with at most two one-dimensional identity fillers. The resulting half-diamond error is at most $2/D$. Refresh this bath between uses and take $D\ge n^3$. The hybrid error is $o(1)$, all imports are flat, and there is no clock for the stationary sequence.
+
+For negative waveform intervals use $\Theta_{\delta}$ itself, which is a convex combination of $\Theta_0$ and $\Wplus$. The latter has an exact flat 16-dimensional factor. Dimension-ratio replication in a dyadic bath has error less than $19/D$ per round. For positive intervals use $\Theta_0$. A counted clock selects these prescribed contacts. The common coin-word argument and a triangular-array likelihood expansion give the matching limit in \eqref{eq:waveform}; details and every resource charge are in Appendix~\ref{app:upper}.
+
+If $\delta_n\sqrt n\to0$, the stationary boundary construction has vanishing error and no supplied purity. In the critical window, \eqref{eq:critical} determines the curve at zero leading purity, not the optimum at a positive leading budget of order $\sqrt n$.
+
+\subsection{Exact service: onsets that depend on the direction}
+
+For exact service we use the least supplied purity
+\[
+ B_{\min}(n,\eps;\Phi)=\inf\,(P+C),
+\]
+the infimum over causal services of $n$ uses of $\Phi$ with error at most $\eps$, at unrestricted memory and exchange. Write $d(t)=1-h_2((1+t)/2)$, so that $d(t)\le t^2$, and let $\Delta_*=8737/4263894$ and $c_*=19.8967\ldots<19.897$ be the constants of Appendix~\ref{app:upper}.
+
+\begin{theorem}[Exact-service onsets]\label{thm:onsets}
+\begin{enumerate}[label=(\alph*),itemsep=4pt]
+\item For every $n\ge1$ and $0<\delta\le\Delta_*/4$,
+\begin{equation}\label{eq:slopes}
+ \frac{5}{3\ln2}\,n\delta\le B_{\min}(n,0;\Theta_\delta)\le c_*\,n\delta.
+\end{equation}
+\item There is a uniquely exposed $\Psi_0\in\K_6$ and an explicit unital affine ray $\Psi_t\notin\K_6$, $0<|t|<1$, with the same Choi support. Exact service of $\Psi_t$ is achieved with
+\begin{equation}\label{eq:soft-ledger}
+ Q=1,\quad J=n-1,\quad B=n\,d(t),
+\end{equation}
+and
+\[
+ \frac{nt^2}{2\cdot1443^2\ln2}\le B_{\min}(n,0;\Psi_t)\le n\,d(t).
+\]
+In particular, $t=h/\sqrt n$ costs at most $h^2$ purity at error zero.
+\item The point $\Theta_0\otimes\Psi_0\in\K_{18}$ admits a supporting functional $f$, with $f\le0$ on $\K_{18}$ and $f(\Theta_0\otimes\Psi_0)=0$, such that the affine rays $\Theta_t\otimes\Psi_0$ and $\Theta_0\otimes\Psi_t$ both have $f=t$. Both rays lie at Choi distance of order $t$ from $\K_{18}$. For every $n\ge1$ and $0<t\le\Delta_*/4$,
+\[
+ \frac{5}{3\ln2}\,nt\le B_{\min}(n,0;\Theta_t\otimes\Psi_0)\le c_*\,nt,\qquad
+ \frac{nt^2}{2\cdot1443^2\ln2}\le B_{\min}(n,0;\Theta_0\otimes\Psi_t)<n\,d(t)+1.
+\]
+The last construction retains about $n\log3$ qubits of memory.
+\end{enumerate}
+\end{theorem}
+
+Part~(a) gives the Werner direction a linear onset, and part~(b) gives the six-level direction a quadratic one. Part~(c) places both directions at one boundary point, so the exact-service onset depends on the direction of departure, not only on the boundary point. Section~\ref{sec:soft} proves (b) and (c).
+
+For the lower bound in (a), a source $\rho$ obeys the production bound
+\begin{equation}\label{eq:production}
+ S(T_U\rho)-S(\rho)\ge\frac{5}{3\ln2}
+ \bigl[\Tr(\rho M_U^*(I))-p\bigr]_+.
+\end{equation}
+Indeed, put $\omega=T_U\rho$. The relative entropy of $U(\tau_3\otimes\rho)U^*$ from $\tau_3\otimes\omega$ equals the left side times $\ln2$. It dominates the R\'enyi divergence of order one half, $-2\ln A$, where $A=\Tr[T_U(\sqrt\rho)\sqrt\omega]\le\norm{T_U(\sqrt\rho)}_2$, and $-2\ln A\ge2(1-A)\ge1-A^2$. Apply \eqref{eq:energy} to $X=\sqrt\rho$. Summing the production over the rounds against the entropy deficit of the supplies gives the lower slope in \eqref{eq:slopes}. A faithful mixed qutrit source, a finite counted twirl and dyadic dilution give the upper slope; Appendix~\ref{app:upper} specifies them. The two slopes are not claimed equal.
+
+
+\section{An exact quadratic boundary direction}\label{sec:soft}
+
+This section proves parts (b) and (c) of Theorem~\ref{thm:onsets}. Lemma~\ref{lem:schur} characterizes the Schur channels in $\K_N$, and explicit Schur channels that are not factorizable appear in~\cite[Section~3]{HM2011}, which also records earlier examples of K\"ummerer and of Bhat and Skalski and the example of Dykema and Juschenko~\cite[Remarks~3.6 and~4.8]{HM2011}. What is new here is a uniquely exposed boundary point of $\K_6$ with an exact outward ray of quadratic cost.
+
+\subsection{A supporting functional valid for every finite bath}
+
+For a channel $\Gamma$ on $M_6$ put
+\[
+ q_{ij}=\bra j\Gamma(e_{ji})\ket i.
+\]
+The matrix $q$ is positive semidefinite; for a unitary contact with diagonal bath blocks $D_i$ it is $q_{ij}=\Tr(\rho D_i^*D_j)$. Define
+\begin{align*}
+ a_4&=e_4-(e_1+e_2)/\sqrt2,&
+ a_5&=e_5-(e_1+e_3)/\sqrt2,&
+ a_6&=e_6-(e_2+e_3)/\sqrt2,\\
+ E(\Gamma)&=\sum_{k=4}^6a_k^*qa_k,&
+ L(\Gamma)&=\sum_{i=1}^6(1-q_{ii}),&
+ w(\Gamma)&=\Im q_{12}-35E(\Gamma)-240L(\Gamma).
+\end{align*}
+Both penalties are nonnegative on channels. The bound needed is
+\begin{equation}\label{eq:soft-support}
+ w(\Gamma)\le-(17-12\sqrt2)E(\Gamma)
+ -(119-84\sqrt2)L(\Gamma)\le0,\qquad\Gamma\in\K_6.
+\end{equation}
+
+\begin{proof}[Proof of \eqref{eq:soft-support}]
+First take six unitaries $V_i$ in any finite tracial algebra. Let $E_V$ be the sum of the three squared $L^2$ half-sum defects. Gauge $V_1$ to $I$, put $u=V_1^*V_2$, $v=V_1^*V_3$, and let $e_1,e_2,e_3$ be the defect norms. With $\kappa=1+\sqrt2$,
+\[
+ \norm{\Re u}_2\le\kappa e_1,\quad
+ \norm{\Re v}_2\le\kappa e_2,\quad
+ \norm{u^*v+v^*u}_2\le2\kappa e_3.
+\]
+These follow by comparing the square of each half-sum with the corresponding unitary square. Round $u,v$ spectrally to $ih,ik$ with Hermitian unitaries $h,k$. Scalar spectral calculus gives
+\[
+ \norm{u-ih}_2^2\le2\norm{\Re u}_2^2,
+ \quad |\Im\tau(u)-\tau(h)|\le\norm{\Re u}_2^2,
+ \quad \norm{hk+kh}_2^2\le20\kappa^2 E_V.
+\]
+For any two reflections, $|\tau(h)|\le\norm{hk+kh}_2^2/4$. To see this, split $k$ into the two spectral blocks of $h$. Its off-diagonal blocks have equal squared normalized $L^2$ norm $c\le\min(\tau P_+,\tau P_-)$. The squared norm of its diagonal part is $1-2c\ge|\tau h|$, and the anticommutator is twice that part. It follows that
+\begin{equation}\label{eq:moment-ineq}
+ |\Im\tau(V_1^*V_2)|\le6\kappa^2E_V=(18+12\sqrt2)E_V.
+\end{equation}
+
+Now take an arbitrary flat finite contact, not necessarily Schur. Its diagonal blocks are contractions. Let $l_i=1-\tau(D_i^*D_i)$ and take unitary polar extensions $V_i$. Their normalized trace-norm repair cost is
+\[
+ \norm{D_i-V_i}_1=\tau(I-|D_i|)\le l_i.
+\]
+Thus each Gram entry changes by at most $l_i+l_j$ and
+\[
+ |E_V-E_D|\le(4+2\sqrt2)L.
+\]
+Combining with \eqref{eq:moment-ineq} gives
+\[
+ |\Im q_{12}|\le(18+12\sqrt2)E_D+(121+84\sqrt2)L.
+\]
+Subtract the two penalties. The remainder constants in \eqref{eq:soft-support} are positive. Continuity extends the inequality to $\K_6$. Permuting the first three labels and their half-sum labels gives the same bound for either other base pair.
+\end{proof}
+
+\subsection{The contact, the exposed point and the resource cost}
+
+Using Pauli matrices $X,Z$ on a qubit, take
+\begin{equation}\label{eq:soft-unitaries}
+ u_1=I,\quad u_2=iZ,\quad u_3=iX,\quad
+ u_4=(I+iZ)/\sqrt2,\quad u_5=(I+iX)/\sqrt2,\quad
+ u_6=i(Z+X)/\sqrt2.
+\end{equation}
+All are unitary and the half-sum identities are exact. The controlled interaction $U=\sum_i e_{ii}\otimes u_i$, with $\rho_t=(I+tZ)/2$, gives the Schur channel $\Psi_t(e_{ij})=q_{ji}(t)e_{ij}$. Every source gives a unital channel. The penalties vanish as bath operators, the witness effect is $Z$, and $w(\Psi_t)=t$.
+
+For an explicit Choi description let $F_0$ have columns
+\[
+ e_1,e_2,e_3,(e_1+e_2)/\sqrt2,(e_1+e_3)/\sqrt2,(e_2+e_3)/\sqrt2.
+\]
+Then
+\[
+ q(t)=F_0^*\begin{pmatrix}1&it&0\\-it&1&0\\0&0&1\end{pmatrix}F_0.
+\]
+For $|t|<1$ the Choi rank is three with constant support. At zero its nonzero eigenvalues are $1/2,1/4,1/4$, and
+\begin{equation}\label{eq:soft-distance}
+ d_J(\Psi_t,\Psi_0)=\frac{\sqrt{15}}{12}|t|.
+\end{equation}
+The rank-two Hermitian difference has trace zero and squared trace $15t^2/2$ before the Choi factor $1/6$, which proves this formula.
+
+The exposed point is unique. Equality in \eqref{eq:soft-support} forces $E=L=0$. Positivity gives all half-sum column relations and $q_{ii}=1$. The three half-sum norms then force the real base moments to vanish; the permuted moment inequalities force their imaginary parts to vanish. Hence $q=F_0^*F_0$. The diagonal Choi block has trace one, so positivity annihilates every other block. This is precisely $\Psi_0$.
+
+To quantify the distance from the closure, put $\Sigma_a=\sum_k a_ka_k^*$, let $\Lambda$ have the two nonzero entries $\Lambda_{12}=i/2$, $\Lambda_{21}=-i/2$, and set $\Xi=\Lambda-35\Sigma_a+240I_6$. For the embedding $V e_i=\ket{ii}$,
+\[
+ \mathcal W=6V\Xi^TV^*,\quad w(\Gamma)=\Tr[\mathcal WJ(\Gamma)]-1440,
+ \quad 0\le\mathcal W\le1443I.
+\]
+The bound uses $\Tr\Sigma_a=6$ and $\norm\Lambda=1/2$. A support test therefore gives
+\begin{equation}\label{eq:soft-gap}
+ \dist_J(\Psi_t,\K_6)\ge|t|/1443.
+\end{equation}
+For $t<0$ use the opposite imaginary-part witness.
+
+Refresh the one-qubit bath independently in $\rho_t$ between rounds. This applies exactly $n$ independent channels even to adaptive entangled inputs. No clock is needed. Its resource ledger is \eqref{eq:soft-ledger}, with $P=d(t)$, $C=(n-1)d(t)$ and $d(t)=1-h_2((1+t)/2)$. At error zero, \eqref{eq:floor} and \eqref{eq:soft-gap} give $B\ge nt^2/(2\cdot1443^2\ln2)$, which proves Theorem~\ref{thm:onsets}(b). They do not give a fixed-error critical curve for this ray.
+
+\subsection{One base point with two different outward rays}
+
+Marginalizing either tensor factor on a maximally mixed input maps $\K_{18}$ into $\K_3$ or $\K_6$. Let $f$ be the sum of $h_W-p$, applied to the qutrit marginal, and $w$, applied to the six-level marginal. Then $f\le0$ on $\K_{18}$ and $f(\Theta_0\otimes\Psi_0)=0$, and the rays
+\[
+ \Theta_t\otimes\Psi_0,\qquad \Theta_0\otimes\Psi_t
+\]
+both have $f=t$. The Choi state of a marginal is a partial trace of the Choi state, so $d_J$ contracts under marginals. With \eqref{eq:soft-distance} and \eqref{eq:soft-gap} this gives
+\[
+ \dist_J(\Theta_t\otimes\Psi_0,\K_{18})=t,\qquad
+ \frac{|t|}{1443}\le\dist_J(\Theta_0\otimes\Psi_t,\K_{18})\le\frac{\sqrt{15}}{12}|t|.
+\]
+The two onsets are therefore not an artifact of distance.
+
+\paragraph{Lower bounds.}
+A marginal bath map has production at most the original production: adjoining a maximally mixed input factor and retaining its output adds at most its logarithmic dimension to the output entropy. The original deficit ledger consequently bounds each marginal's production, and \eqref{eq:production} gives $B\ge(5/(3\ln2))nt$ on the first ray. On the second, \eqref{eq:floor} and the distance bound give $B\ge nt^2/(2\cdot1443^2\ln2)$. No uncounted marginal-device resource is assumed.
+
+\paragraph{Upper bounds.}
+On the first ray, run the Werner construction of Appendix~\ref{app:upper} for the qutrit factor and a flat qubit source for $\Psi_0$; as the bath grows, the cost tends to $c_*nt$. On the second ray, padding need not add a bit per round. Prepare all $n$ flat qutrit boundary baths jointly, embed their $3^n$-dimensional tensor product once into qubits, and cycle the tensor factors after each use. This costs less than one bit of padding purity, no clock, and no imported purity for the qutrit factor; the qubit sources pay $nd(t)$. The price is memory: the device retains about $n\log3$ qubits. Padding each qutrit separately would cost about $0.415n$ bits whatever $t$ is. Padding blocks of $k$ qutrits costs less than $n/k$ bits with memory $O(k)$, so the quadratic rate needs blocks of size of order $1/t^2$. This proves Theorem~\ref{thm:onsets}(c).
+
+
+\section{Open questions}\label{sec:open}
+
+\paragraph{Undecidability at fixed size.}
+In Theorem~\ref{thm:undecidable} the dimension, the gap and the error grow with the program. Is the growth question already undecidable for channels of one fixed dimension, or at one fixed error? For correlations, membership is undecidable already at constant size~\cite{FuMillerSlofstra}, but without a gap or a guarantee of membership in the commuting-operator set, so it does not yield factorizable channels of fixed dimension.
+
+\paragraph{The optimal positive-purity critical window.}
+Theorem~\ref{thm:edge} determines the limiting error at $B=o(\sqrt n)$. At $\delta=h/\sqrt n$, error zero costs at most $c_*h\sqrt n+O(1/n)$ (Appendix~\ref{app:upper}). Between these, the optimum at $B\sim\beta\sqrt n$ is not determined, nor is it known whether fresh-source formation is optimal against general reuse and correlations. The best certified exact Werner slope lies between $5/(3\ln2)$ and $19.897$ bits per unit excess.
+
+\paragraph{Affine outward directions.}
+At a fixed flat contact $U$ for $\Phi_0$, let $\mathcal H_U$ be the real space of traceless Hermitian bath perturbations preserving unitality, and let $L_U$ map them to channel differences. A prescribed unital affine ray $\Phi_0+\delta V$ is implemented by a feasible source tilt at this contact if and only if $V\in\operatorname{ran}L_U$. If so, its least fixed-contact source deficit is
+\[
+ \frac{\delta^2}{2\ln2}\left\langle V,(L_UL_U^*)^\dagger V\right\rangle
+ +O_{U,V}(|\delta|^3).
+\]
+This follows from the minimum-norm solution and the entropy Taylor expansion. Is this sufficient quadratic criterion globally necessary? Can an intermediate exponent occur once all dimensions, near-saturating contacts and correlated services are optimized? No universal linear-or-quadratic dichotomy is asserted.
+
+\paragraph{Witnesses of manageable size.}
+Corollary~\ref{cor:explicit-schur} gives an explicit Schur witness, but of astronomical size, and the conditional gadget witness of~\cite[Proposition~5.5]{Law} lives on $M_{108364}$ with a gap above $2^{-38}\delta_{\mathrm{WZ}}^2$, where $\delta_{\mathrm{WZ}}=2^{-2^{2^{1122000}}}$. Is there an explicit $X\in\G_N\setminus\Fm_N$ of modest size, with a usable gap? Group elements with their regular trace give only equality-pattern moment matrices, which always lie in $\Fm_N$; explicit polynomial separations such as that of Wang and Zhi~\cite{WangZhi} act on words in a group and do not directly give such an $X$.
+
+\paragraph{Exact repeatability.}
+Catalytic channels are repeatable without resets, and repeatable channels are finite mixtures of finite tracial factorizations; at least one of these inclusions is strict~\cite[Proposition~4.6 and Section~9]{Law}. Which one? And can the methods of Theorem~\ref{thm:undecidable} show that exact repeatability is undecidable?
+
+\paragraph{Beyond flat probes and optimal exchange.}
+The sublinear half of the line uses a flat probe and the rank rate. The boundary constructions use $O(n\log n)$ exchange rather than minimal exchange. Removing these restrictions concerns different upper-bound questions; neither follows from the present converse.
+
+
+\appendix
+
+\section{Proof of Theorem~\ref{thm:undecidable}}\label{app:undecidable}
+
+\subsection{The compiler and the matrix branch}
+
+Mastel and Slofstra give a total computable map from a program description $e$ to a scenario with $q_e$ questions and $a_e$ answers per question, a synchronous correlation table $p_e$ with rational entries, and a nonlocal game whose winning probability $f_e$ is a linear functional with nonnegative coefficients~\cite[Corollary~9.16 and its proof; rationality from the sampler of Remark~9.13]{MastelSlofstra}. The map only compiles the description; it never runs $e$. If $e$ halts, $p_e$ is a synchronous finite-dimensional correlation. If $e$ runs forever, $f_e(p_e)=1$ while $f_e(p)\le1/2$ for every $p$ in the closure $C_{qa}$ of the finite-dimensional correlations of the scenario.
+
+Questions may have different numbers of answers; pad every question to $a_e$ answers with answers that always lose. Relabelling a padded answer to a real one is post-processing that cannot lower the winning probability, so $f_e\le1/2$ still holds on the padded $C_{qa}$. The padded projections are zero, so $p_e$ stays synchronous and commuting. Since question probabilities sum to one, the coefficients of $f_e$ sum to at most $a_e^2$.
+
+\begin{lemma}[The halting branch is a single matrix algebra]\label{lem:matrix-branch}
+If $e$ halts, there are projection-valued measures $(E_{xu})_u$ in one matrix algebra $M_k$ with $p_e(u,v|x,y)=\tau_k(E_{xu}E_{yv})$.
+\end{lemma}
+
+This is stronger than the corollary as stated, which only places $p_e$ among synchronous finite-dimensional correlations; central weights of a finite-dimensional algebra could be irrational.
+
+\begin{proof}
+When the program halts, the oracularized game has a perfect synchronous finite-dimensional strategy, by completeness of the protocol~\cite[Theorem~3.2, Lemma~4.1 and the proof of Theorem~9.15]{MastelSlofstra}. Its algebra is a direct sum of matrix blocks with positive weights. The losing projection products have nonnegative trace, so zero total defect forces every occupied block to be perfect; keep one block with its normalized trace. The construction pulls this trace back along a $1$-homomorphism~\cite[proof of Theorem~9.15]{MastelSlofstra}, and the two lifting steps write the lifted traces as uniform averages of pullbacks, $2^{-|X|(n-1)}\sum_y\tau\circ\beta_y$ and $120^{-|R|}\sum_r\tau\circ\beta_r$~\cite[proofs of Lemmas~9.4(b) and~9.8(d)]{MastelSlofstra}. A uniform average of $N$ pullbacks of $\tau_k$ is the normalized trace on $N$ equal copies, that is, on one $M_{Nk}$. The proof of~\cite[Proposition~9.12]{MastelSlofstra} shows that the lifted trace, restricted to the relevant subalgebra, gives the prescribed table for every perfect trace, so the table does not depend on the block chosen. The table is identified in~\cite[Proposition~7.4 and Theorem~9.14]{MastelSlofstra}, and the final correlation is a tensor power~\cite[Section~8, Proposition~9.2 and the proof of Corollary~9.16]{MastelSlofstra}, which stays in a single matrix algebra.
+\end{proof}
+
+\subsection{Uniform self-reference}
+
+Let $R(p)$ test exact feasibility of the levels of the hierarchy of Navascu\'es, Pironio and Ac\'in in turn, and halt at the first infeasible level. Each level is a finite real-algebraic feasibility problem, decidable exactly by Tarski--Seidenberg, as Fanizza et al.\ observe~\cite[Section~2.3]{FanizzaEtAl}. By the completeness of the hierarchy in the commuting-operator model~\cite[Theorem~8]{NPA}, $R(p)$ halts if and only if $p\notin C_{qc}$.
+
+For each $M$ build a program $e_M$ that computes its own table $p_{e_M}$, runs $M$ and $R(p_{e_M})$ in alternation, and halts when either halts. Kleene's recursion theorem makes this effective: $M\mapsto e_M$ is a total computable syntactic specialization and never decides whether $M$ halts. This is the device of~\cite[Section~4.2]{FanizzaEtAl}, there applied to the value of a game, here to membership in $C_{qc}$ and made uniform in $M$.
+
+The test $R(p_{e_M})$ never halts. If it did, $e_M$ would halt, so $p_{e_M}$ would be a finite-dimensional correlation and in particular in $C_{qc}$, contradicting the test. Hence $p_M:=p_{e_M}\in C_{qc}$ for every $M$, and $e_M$ halts exactly when $M$ halts. Writing $q=q_{e_M}$ and $a=a_{e_M}$:
+\begin{enumerate}[label=(\roman*),itemsep=2pt]
+\item if $M$ halts, $p_M$ is realized in one matrix algebra (Lemma~\ref{lem:matrix-branch});
+\item if $M$ runs forever, $p_M\in C_{qc}$ and $\norm{p_M-p'}_\infty\ge1/(2a^2)$ for every $p'\in C_{qa}$, since $1/2\le|f(p_M)-f(p')|\le a^2\norm{p_M-p'}_\infty$.
+\end{enumerate}
+
+\subsection{The Schur builder}
+
+A synchronous commuting-operator correlation has a tracial realization by projections, $p(u,v|x,y)=\tau(e_{xu}e_{yv})$ with $\sum_ue_{xu}=I$~\cite[Theorem~5.5 and Corollary~5.6]{PSSTW}; passing to the von Neumann algebra generated in the GNS representation makes the trace faithful and normal. For $j=(x,u)$ put $m_j=\tau(e_j)$ and
+\[
+ w_0=I,\qquad w_{j,U}=iI+(1-i)e_j,\qquad w_{j,V}=I+(i-1)e_j.
+\]
+These are unitaries. If $w_k=c_kI+b_ke_j$ and $w_l=c_lI+b_le_h$, then
+\begin{equation}\label{eq:builder}
+ \tau(w_k^*w_l)=\bar c_kc_l+\bar c_kb_lm_h+\bar b_kc_lm_j+\bar b_kb_l\,p(j,h).
+\end{equation}
+So $B_{kl}=\tau(w_k^*w_l)$ is computed from $p$ alone, with entries in $\mathbb Q(i)$, without finding the realization. It is positive semidefinite with unit diagonal, and the Schur channel $\Phi_p(X)=B\circ X$ on $M_d$, $d=1+2qa$, is unital and factorizable through the controlled unitary $\sum_ke_{kk}\otimes w_k^*$~\cite[Proposition~2.8]{HM2011}. In the halting branch the same construction in $M_k$ is an exact finite tracial factorization.
+
+\subsection{The quantitative transfer}
+
+\begin{lemma}[Transfer]\label{lem:transfer}
+If $\norm{p-p'}_\infty\ge\gamma$ for every $p'\in C_{qa}$, with $0<\gamma\le1$, then
+\[
+ \dist_J(\Phi_p,\K_d)\ge\frac{\gamma^2}{128^2a^2d}.
+\]
+\end{lemma}
+
+The comparison channels need not be Schur channels.
+
+\begin{proof}
+Let $\Psi$ have a finite tracial factorization with unitary $A=(A_{kl})$ and put $\delta=d_J(\Psi,\Phi_p)$, $t=\sqrt{d\delta}$ and $W_k=A_{kk}^*$. Let $P_{\rm diag}=\sum_k\ket{kk}\bra{kk}$ and call $\ell=\Tr[(I-P_{\rm diag})J(\Psi)]$ the \emph{diagonal leakage}; since $\Phi_p$ is a Schur channel, $\ell\le\delta$. Then $\bra{kk}J(\Psi)\ket{ll}=\tau(W_k^*W_l)/d$ and $\sum_k(1-\norm{W_k}_2^2)=d\ell$.
+
+Take unitary polar completions $z_k$ of the contractions $W_k$. Since $(1-s)^2\le1-s^2$ on $[0,1]$, $\sum_k\norm{z_k-W_k}_2^2\le t^2$. If $\sum_kc_kw_k=0$ then $Bc=0$, and this Choi kernel vector gives $\norm{\sum_kc_kW_k}_2\le t\norm c_2$; with the polar errors,
+\[
+ \Bigl\|\sum_kc_kz_k\Bigr\|_2\le2t\norm c_2.
+\]
+Multiply on the left by $z_0^*$; this keeps every Gram entry and relation bound and makes the identity label $I$. The target satisfies, for every question $x$ and answer $u$,
+\[
+ w_{xu,U}+w_{xu,V}-(1+i)w_0=0,\qquad \sum_uw_{xu,U}-[1+(a-1)i]w_0=0,
+\]
+with squared coefficient norms $4$ and $a^2-a+2\le2a^2$. Hence the gauged unitaries satisfy
+\[
+ \norm{U_{xu}+V_{xu}-(1+i)I}_2\le4t,\qquad
+ \Bigl\|\sum_uU_{xu}-[1+(a-1)i]I\Bigr\|_2\le2\sqrt2\,at.
+\]
+Put $X_{xu}=(U_{xu}-iI)/(1-i)$. For $C=(1+i)I-U$ and unitary $V$, $\norm{C^*C-I}_2\le(2+\sqrt2)\norm{C-V}_2$, and for $|z|=1$,
+\[
+ \bigl||1+i-z|^2-1\bigr|=\sqrt2\,|z-1||z-i|\ge\dist(z,\{1,i\}).
+\]
+Rounding the spectrum of $U_{xu}$ to $\{1,i\}$ gives a projection $P_{xu}$ with $\norm{P_{xu}-X_{xu}}_2\le(1+\sqrt2)\norm{C-V}_2\le10t$. For each question $S_x=\sum_uP_{xu}$ satisfies $\norm{S_x-I}_2\le12at$.
+
+Stack the projections into $T_x$, so $T_x^*T_x=S_x$, and extend the polar isometry to an isometry $Y_x$ on the whole domain; the codomain has dimension $am\ge m$. Since $|\sqrt s-1|\le|s-1|$, $\norm{Y_x-T_x}_2=\norm{I-\sqrt{S_x}}_2\le12at$. The blocks give a POVM $E_{xu}=Y_{xu}^*Y_{xu}$ with $\norm{E_{xu}-X_{xu}}_2\le34at$. Let Alice use these POVMs and Bob their transposes on a maximally entangled state. The correlation $p'(u,v|x,y)=\tau_m(E_{xu}E_{yv})$ lies in $C_q$, since finite-dimensional POVM correlations have projective dilations~\cite[proof of Theorem~5.3]{PSSTW}; it need not be synchronous, which is why the gap is measured against all of $C_{qa}$.
+
+For $t\le1$ the polar Gram differs from the target by at most $t^2+2t\le3t$ per entry. The coefficients of $X_{xu}$ have $\ell^1$ norm $\sqrt2$, so its second moments differ from $p$ by at most $6t$, and replacing both $X$'s by the $E$'s costs at most $(1+\sqrt2)\,34at\le85at$. Hence
+\[
+ \norm{p'-p}_\infty\le91at\le96a\sqrt{d\delta}.
+\]
+If $\delta<\gamma^2/(128^2a^2d)$ this contradicts the gap. The bound holds for every single finite factor and extends to $\K_d$ by continuity.
+\end{proof}
+
+With $\gamma=1/(2a^2)$ the lemma gives $\dist_J(\Phi_M,\K_d)\ge1/(256^2a^6d)=g_M$ in the nonhalting branch.
+
+\subsection{The operational branches and the corollaries}
+
+\emph{Halting branch.} $\Phi_M$ has an exact finite tracial factorization. The rolling-reservoir theorem~\cite[Theorem~6.1]{Memory} with slack one gives services with maximally mixed imports, exchange at most $n(H/2+1)\le n(\log d+1)\le nd$, and memory $O(\log(n/\eps))=O(\log n)$ at any fixed or inverse-polynomial error. Its constant depends on the bath dimension.
+
+\emph{Nonhalting branch.} Theorem~\ref{thm:closure}(b) holds for every channel at any exchange. With $C=0$, $\Delta\ge g_M$ and $\eps=g_M/4$ it gives $Q\ge n(3g_M/4)^2/(2\ln2)=9g_M^2n/(32\ln2)$. A bank of $n$ pure Stinespring environments, one per use, serves $\Phi_M$ exactly with $Q\le n\lceil\log d\rceil$, $J=0$ and $C=0$~\cite[Section~III]{RybarZiman}.
+
+\emph{Corollary~\ref{cor:rate}.} The two branches give $q=0$ and $q\ge9g_M^2/(32\ln2)>g_M^2/4$. An approximation within $g_M^2/16$, compared with the threshold $g_M^2/8$, would decide halting. The zero-error limit has the same separation.
+
+\emph{Corollary~\ref{cor:closed}.} By~\cite[Theorem~3.2(a)]{Memory}, $\kappa(\Phi)=0$ exactly when $\Phi\in\K_d$, and $\kappa(\Phi)\ge\dist_J(\Phi,\K_d)^2/(2\ln2)$. The two branches therefore differ in the closed-bath rate by at least $g_M^2/(4\ln2)$. The quantity $H(\Phi_M)$, a maximum of a continuous concave function over a compact set, can be computed to any precision. An approximation of the rate within $g_M^2/(16\ln2)$ would decide halting.
+
+\emph{Corollary~\ref{cor:explicit-schur}.} A machine that provably never halts lands in the nonhalting branch, and the map computes its channel.
+
+\emph{Remark~\ref{rem:full-rank}.} If $M$ halts, $\Phi_M$ and $\mathrm{Dep}_d$ have exact finite matrix factors and $\eta$ is rational; integer copies in a common flat bath combine them exactly. If $M$ runs forever, $d_J(\Omega_M,\Phi_M)\le\eta$, and the distance to the closed set $\K_d$ is $1$-Lipschitz.
+
+\subsection{Effective flat completion}
+
+Factor $B$ as the Gram matrix of algebraic unit vectors $f_1,\dots,f_d\in\C^r$; exact algebraic linear algebra computes $r$ and the factorization. Put $S=\frac1d\sum_i\ket{f_i}\bra{f_i}$, $c=\lambda_{\max}(S)$ and $cI_r-S=\sum_l\mu_l\ket{e_l}\bra{e_l}$ with $\mu_l>0$, writing $e_l=\sum_ib_{li}f_i$. Choose an integer $k_0\ge\max\{1,\max_l(\sum_i|b_{li}|)^2\}$. Since $\norm{\sum_ib_{li}w_i}_\infty\le\sum_i|b_{li}|$ in every tracial realization, this is a valid choice for the completion of Lemma~\ref{lem:completion}, and every entry of the completed Gram matrix is an algebraic function of $B$. The completed channel is algebraic rather than rational, has a flat probe on its entire rank, and keeps the transfer bound with $t=\sqrt{d'\delta}$ on its first $d$ labels. In the halting branch a realization in $M_m$ gives one in $M_{m2^L}$, with $2^L$ the order of the Boolean group used for the characters.
+
+The checks in the \texttt{verify} directory test the builder~\eqref{eq:builder}, the relation identities, the constant comparisons, the completion identities and, on random noncommutative instances, every inequality of Lemma~\ref{lem:transfer}; they support but do not replace this proof.
+
+
+\section{A dimension-independent energy certificate}\label{app:energy}
+
+For ordinary bath traces, define
+\[
+ D_U(X)=\Tr(X^2Q_U),\qquad
+ R_U(X)=\frac13\norm{[U,I_3\otimes X]}_F^2.
+\]
+An exact rational trace sum of squares proves
+\begin{equation}\label{eq:commutator}
+ D_U(X)\le\frac3{10}R_U(X).
+\end{equation}
+The finite certificate is supplied with this manuscript as \texttt{werner\_commutator\_c03\_exact.json}, together with two independent checkers. Both verify the polynomial identity and rational positive definiteness exactly; the second also verifies exactly that each relation is a generated block-unitarity consequence. The certificate specifies 13 positive-definite rational Gram blocks and 418 trace multipliers of block-unitarity relations. Explicitly the identity is
+\[
+ \frac3{10}R-D=
+ \sum_b\mathcal S\!\left[\sum_{\alpha,\beta}(G_b)_{\alpha\beta}
+          \Tr(p_{b,\alpha}^*p_{b,\beta})\right]
+ -\sum_j\lambda_j\mathcal S[\Tr(r_j)].
+\]
+Here $p_{b,\alpha}$ are the word polynomials encoded by the sparse columns, $\mathcal S$ averages the six simultaneous permutations of the qutrit indices and takes the real part, and $r_j$ are consequences of $UU^*=U^*U=I$. All relation terms vanish, and rational positive definiteness makes every other term nonnegative in every bath dimension. Appendix~\ref{app:supplement} specifies the reproduction checks. This is a finite exact algebraic proof, not a bath-size extrapolation.
+
+Diagonalize $X$ with decreasing eigenvalues $x_i$. For a bath unitary $V$, replacing $U$ by $U'=(I_3\otimes V)U$ changes neither $D_U(X)$ nor $\Tr(T_UX)^2$, and replaces $T_UX$ by $V(T_UX)V^*$. Choose $V$ so that $T_{U'}X$ is diagonal in the eigenbasis of $X$, with decreasing eigenvalues $y_i$. Bistochasticity gives $y\prec x$, and Abel summation gives $\sum_i y_i(x_i-y_i)\ge0$. Thus
+\[
+ R_{U'}(X)=2(\norm x_2^2-\langle x,y\rangle)
+ \le2(\norm x_2^2-\norm y_2^2).
+\]
+Applying \eqref{eq:commutator} to $U'$ gives \eqref{eq:energy}. The same reasoning applies to $U^*$; its antisymmetric subinstrument is $M_U^*$.
+
+\subsection{The positive Schatten estimate}
+
+\begin{lemma}[Schatten contraction]\label{lem:schatten}
+Let
+\[
+ \mathcal L_t=e^{t(1-p)}M_U+e^{-tp}(T_U-M_U),\qquad
+ a(t)=pe^{t(1-p)}+(1-p)e^{-tp}.
+\]
+For $0<t\le5/32$, $r=1+(32/5)t$ and $X\ge0$,
+\begin{equation}\label{eq:schatten}
+ \norm{\mathcal L_t(X)}_r\le a(t)\norm X_r,
+\end{equation}
+uniformly in the bath dimension $m$ and in $U\in U(3m)$. The Schatten norms are unnormalized.
+\end{lemma}
+
+\begin{proof}
+Let $1<r\le2$, $X,Y\ge0$, $\norm X_r=\norm Y_r=1$. In their eigenbases, write $t_{ji}$ for the bistochastic coefficients of $T_U$ and $z_{ji}$ for those of $M_U$. Then $0\le z_{ji}\le t_{ji}$. Put
+\begin{align*}
+ b&=\sum_{ji}t_{ji}\left[x_i^r+(r-1)y_j^r-rx_iy_j^{r-1}\right],\\
+ F_0&=\sum_{ji}t_{ji}(x_i^{r/2}-y_j^{r/2})^2.
+\end{align*}
+The scalar Young remainder is nonnegative and satisfies $F_0\le b/(r-1)$. One way to check the stronger scalar inequality is to set $a=x^{r/2}$, $c=y^{r/2}$: its difference factors as $a^2[2-r+2(r-1)(c/a)-r(c/a)^{2-2/r}]$, which is nonnegative by weighted concavity of the power $2-2/r\in[0,1]$. Endpoints follow by continuity.
+
+Let $X_0=X^{r/2}$, $Y_0=Y^{r/2}$. Direct expansion gives
+\[
+ F_0-[\Tr X_0^2-\Tr(T_U X_0)^2]
+ =\norm{Y_0-T_U X_0}_2^2,
+\]
+and the analogous adjoint identity. With $S=M_U-pT_U$ and $s_{ji}=z_{ji}-pt_{ji}\ge-pt_{ji}$,
+\begin{align*}
+ r\Tr[Y^{r-1}S(X)]
+ &=D_U(X_0)+(r-1)D_{U^*}(Y_0)
+   -\sum_{ji}s_{ji}\left[x_i^r+(r-1)y_j^r-rx_iy_j^{r-1}\right]\\
+ &\le\left[\frac{(3/5)r}{r-1}+p\right]b.
+\end{align*}
+Since $\Tr[Y^{r-1}T_U(X)]=1-b/r$, positive Schatten duality proves
+\[
+ \norm{(T_U+vS)(X)}_r\le\norm X_r
+ \quad\text{if}\quad
+ v\left[\frac{(3/5)r}{r-1}+p\right]\le1.
+\]
+The map is completely positive for $0\le v\le1/p$. Finally
+\[
+ \mathcal L_t=a(t)(T_U+v(t)S),\qquad
+ v(t)=\frac{e^t-1}{1+p(e^t-1)}\le2t.
+\]
+For $r=1+(32/5)t$, $0<t\le5/32$, the sufficient inequality holds. This proves \eqref{eq:schatten}, including singular sources by continuity.
+\end{proof}
+
+\section{From supplied purity to a chronological envelope}\label{app:prefix}
+
+Place all prescribed independent supplies alongside the initial memory for analysis only; access is still at the prescribed times, and exported registers are frozen permanently. Their product source $\Omega$ has deficit $B=P+C$ relative to its full dimension $D$. Contacts extend by identity on inaccessible supplies and frozen exports. This representation changes neither the physical device nor its resource charge.
+
+For $0<\theta<1$, spectral clipping gives a state $\Omega'$ with
+\begin{equation}\label{eq:clip}
+ \frac12\norm{\Omega'-\Omega}_1\le\theta,\quad
+ \Omega'\le2^L I_D/D,\quad
+ L=(B+1)/\theta+\log\frac1{1-\theta}.
+\end{equation}
+Indeed the negative part of $\sum_i\omega_i\log(D\omega_i)$ has magnitude less than one. The positive part is at most $B+1$; remove the mass above $(B+1)/\theta$ and normalize. This is a comparison process, not postselection by the device. The smoothed supplies may be correlated, which is allowed in the analysis because the whole source remains accounted for.
+
+Let $S_k$ count antisymmetric outcomes of independent support tests. For any nonnegative past-record function $F\le\bar F$, the subnormalized bath source $\rho_F$ has trace $s=\E F$ and satisfies $\rho_F\le\bar F2^L I_D/D$. Summing all Bell-test branches is a unital bath map, so this bound holds at every prefix. Iterating \eqref{eq:schatten}, then using Schatten H\"older, gives over any next $m$ rounds
+\begin{equation}\label{eq:prefix}
+ \E\left[F e^{t(S_{k+m}-S_k-mp)}\right]
+ \le a(t)^m(\bar F2^L)^{(r-1)/r}s^{1/r}.
+\end{equation}
+The factors $D^{(r-1)/r}$ from tracing the final state cancel the source norm's inverse factor. No division by $s$ is needed. This estimate permits arbitrary changing contacts and arbitrary memory dimension.
+
+If $B_n=o(\sqrt n)$, choose $\theta_n=\sqrt{(B_n+1)/\sqrt n}$. Then $\theta_n\to0$ and $L_n=o(\sqrt n)$. For fixed integer $j>0$ take $t_n=j/(\sigma\sqrt n)$ in \eqref{eq:prefix}. Since $\ln a(t)=\sigma^2t^2/2+O(t^3)$, the limiting factor over $n(v-u)$ rounds is $e^{j^2(v-u)/2}$ and the capped-source factor tends to one.
+
+Take $X_n$ and $Y_n$ as in Section~\ref{sec:edge}. All positive integer moments at fixed rational times are uniformly bounded. Countable marginal compactness gives a subsequential law on rational-time records. Let $\varphi$ be a bounded continuous nonnegative function of finitely many rational-time coordinates at times at most $u$. Apply \eqref{eq:prefix} with $F_n=\varphi\,\psi_R(Y_n(u))Y_n(u)^j$, where $\psi_R$ is a continuous cutoff. Higher moments give uniform integrability. Pass to the limit, remove the cutoff and use a monotone-class argument. The result is
+\[
+ \E[\varphi\, Y(v)^j]\le e^{j^2(v-u)/2}\E[\varphi\, Y(u)^j].
+\]
+Thus every discounted power in \eqref{eq:power-sm} is a supermartingale on rational times. Upcrossing regularization gives their common nonnegative right-limit process. Power consistency follows from continuity of $y\mapsto y^j$. It need not be a modification of the original record; the final test also requires agreement with the regularization. The target has this agreement with probability one. Fatou gives $\E Y(0+)^j\le1$ for all $j$, hence $Y(0+)\le1$. Higher-power optional bounds give class (D) on the bounded horizon. These are standard inputs: supermartingale regularization~\cite[Theorems~II.2.9 and~II.2.10]{RevuzYor} and the Doob--Meyer decomposition~\cite[Theorem~I.3.15]{JS}.
+
+\section{The all-power path comparison}\label{app:statistical}
+
+\begin{lemma}[Brownian domination on the overlap event]\label{lem:path}
+Let $(\mathcal F_t)$ satisfy the usual conditions, and let $Y\ge0$ be adapted and c\`adl\`ag with $Y_0\le1$, such that $e^{-j^2t/2}Y_t^j$ is an $(\mathcal F_t)$-supermartingale for every integer $j\ge1$. Let $G$ be the event that $Y$ is continuous and strictly positive on $[0,1]$ with $[\log Y]_s=s$ for $s\le1$. Here $[\cdot]$ is the semimartingale bracket: $Y$ is a semimartingale by the proof, and on $G$ its bracket is the almost-sure limit along the fixed dyadic subsequence of Section~\ref{sec:test}. Then there is an $(\mathcal F_t)$-Brownian motion $W$ on an extension such that
+\[
+ \log Y_t=\log Y_0+W_t+K_t,\qquad K_0=0,
+ \quad K\text{ nonincreasing},\quad\text{on }G.
+\]
+The Brownian motion need not be independent of $G$.
+\end{lemma}
+
+\begin{proof}
+The Doob--Meyer decomposition~\cite[Theorem~I.3.15]{JS} applies to $e^{-t/2}Y_t$, not to $Y_t$. It gives
+\[
+ Y=Y_0+M+\frac12\int Y_-\,dt-A,
+\]
+where $A$ is predictable increasing. Localize with $Y_-$ bounded away from zero and infinity. On a common predictable clock $H$, write $dt=v\,dH$, $dA=\alpha\,dH$, $d\langle M^c\rangle=Y_-^2c\,dH$, and let the compensator of actual jumps be $dH\,\nu(dz)$. It\^o's formula for the discounted powers gives
+\begin{equation}\label{eq:drift}
+ -\frac\alpha{Y_-}+\frac{j-1}{2}(c-v)
+ +\int g_j(z/Y_-)\,\nu(dz)\le0,
+ \quad g_j(x)=\frac{(1+x)^j-1}{j}-x\ge0\ (x\ge-1).
+\end{equation}
+This uses the actual jump compensator, including predictable atoms. A standard truncated-characteristic form gives the same expression; the remainder $g_j$ is quadratic at zero. Dropping the jump term and letting $j\to\infty$ gives $c\le v$. Positive jump mass would make the integral grow exponentially in $j$, contradicting \eqref{eq:drift}; thus all jumps are nonpositive. On $\{c=v\}$, Fatou gives
+\begin{equation}\label{eq:first-moment}
+ \int(-z/Y_-)\,\nu(dz)\le\alpha/Y_-.
+\end{equation}
+This supplies the finite first jump moment needed on that set.
+
+Define the continuous local martingale $N=\int Y_-^{-1}dM^c$ before absorption, then freeze it. Its bracket $C_t=\int c\,dH\le t$ is continuous. Hence $D_t=t-C_t$ is continuous increasing. The predictable filter $I=1_{\{D=0\}}$, also stopped at absorption, satisfies $\int I\,dD=0$ and is supported on $\{c=v\}$ up to clock-null sets.
+
+On each localized interval form
+\[
+ V=\int\frac I{Y_-}\,dY-\frac12\int I\,dC,
+ \qquad N^I=\int I\,dN.
+\]
+By \eqref{eq:first-moment}, its compensated jump part can be written without a first-moment truncation ambiguity. Its decomposition is
+\[
+ V=N^I+\int I\left[\frac{v-c}{2}-\frac\alpha{Y_-}
+             -\int\frac z{Y_-}\nu(dz)\right]dH
+       +\int I\frac z{Y_-}\,\mu(dt,dz),
+\]
+where $\mu$ is the actual jump measure. Both added terms are nonincreasing: use \eqref{eq:first-moment}, $\int I(v-c)dH=0$, and nonpositive jumps. Thus $V-N^I$ is nonincreasing as a process, without conditioning on $G$.
+
+On $G$ the bracket is $C_t=t$, so $I=1$. Continuous It\^o identifies $V=\log Y-\log Y_0$. Localization is harmless there because every positive continuous path on the compact horizon has a positive minimum and finite maximum. No logarithm is asserted after a killing path. The bounded bracket extends $N^I$ through absorption. Write $d\langle N^I\rangle=\eta_tdt$, $0\le\eta_t\le1$, and add an independent Brownian motion $B'$:
+\[
+ W=N^I+\int\sqrt{1-\eta_t}\,dB'_t.
+\]
+Its bracket is $t$, so L\'evy's characterization~\cite[Theorem~IV.3.6]{RevuzYor} makes it Brownian. On $G$ the added term has zero bracket, and a continuous local martingale is constant where its bracket is~\cite[Proposition~IV.1.13]{RevuzYor}; so the added term vanishes there. The asserted comparison follows. In particular this proof uses a global predictable filter, not stochastic integration conditioned on a future event.
+\end{proof}
+
+\subsection{A common measurable test and the sharp lower bound}\label{sec:test}
+
+Under the target in Theorem~\ref{thm:edge}(b), independent Bernoulli scores give the limit
+\[
+ X(t)=B(t)+\int_0^t b(s)\,ds,\qquad Y(t)=e^{X(t)}.
+\]
+The bounded triangular-array central limit theorem applies; the target paths are positive continuous and have log quadratic variation $t$. Choose a subsequence attaining the liminf service error and the rational-time limit in Appendix~\ref{app:prefix}. On every finite rational projection, lower semicontinuity of total variation bounds the limiting distance by that liminf. Increasing projections generate the product sigma-field, so the same holds on the full rational record.
+
+One can define $G$ measurably for both laws: require agreement with right regularization and positive continuity, and use smooth bounded functions equal to $\log$ on $[1/k,k]$. Their semimartingale quadratic-variation sums converge in probability. A deterministic subsequence of dyadic partitions gives almost-sure convergence simultaneously for the countably many localizations under both laws. Every positive continuous path stays in some $[1/k,k]$. This produces a common event with target probability one; no universal pathwise variation statement for arbitrary records is assumed.
+
+Write $b=b_i$ on partition intervals of length $\Delta t_i$ and put $E_+=\sum_i(b_i)_+^2\Delta t_i$. By Lemma~\ref{lem:path}, on $G$,
+\[
+ T=\sum_i(b_i)_+\Delta\log Y_i
+ \le\sum_i(b_i)_+\Delta W_i.
+\]
+The right side is $N(0,E_+)$; the target score is $N(E_+,E_+)$. For $E_+>0$, the target probability of $G\cap\{T\ge E_+/2\}$ is $\Ncdf(\sqrt{E_+}/2)$ and the simulator probability is at most $1-\Ncdf(\sqrt{E_+}/2)$. Their difference proves \eqref{eq:waveform}. The scalar case takes $b=h/\sigma$ and proves \eqref{eq:critical}. Irrational partition endpoints are permitted: use the continuous regularized paths and rational approximations. Clipping changes the error by only $\theta_n=o(1)$.
+
+\subsection{The supercritical statement}
+
+If $B_n=o(n\delta_n)$, clip with $\theta_n=\sqrt{(B_n+1)/(n\delta_n)}$, so $L_n=o(n\delta_n)$. Take $F=1$ and $t=\delta_n/(2\sigma^2)$ in \eqref{eq:prefix}. The cap penalty is $O(tL_n)=o(n\delta_n^2)$, whereas the exponential Markov bound for $S_n\ge np+n\delta_n/2$ has exponent at most $-c n\delta_n^2$. It tends to zero. The ideal Bernoulli count exceeds that threshold with probability tending to one by Chebyshev. This proves $\eps_n\to1$. Subsequence selection gives the corresponding $\Omega(n\delta_n)$ necessary order for any fixed error bound strictly below one.
+
+\section{Finite constructions and complete resource ledgers}\label{app:upper}
+
+\subsection{The boundary and the symmetric channel}
+
+$U_0=F-2P_{\Omega_3}$ is the unitary of~\cite[proof of Theorem~5.6(1)]{HM2015}. It is unitary because $F$ and $P_{\Omega_3}$ commute and $FP_{\Omega_3}=P_{\Omega_3}$. Its entries are
+\[
+ (U_0)_{ia;jb}=\delta_{ib}\delta_{aj}-(2/3)\delta_{ia}\delta_{jb}.
+\]
+With a flat qutrit bath, summing indices gives $J=(13/81)I-(4/27)F=pJ(\Wminus)+(1-p)J(\Wplus)$.
+
+That $\Wplus$ is a mixture of unitaries is due to Mendl and Wolf~\cite{MendlWolf}; see~\cite[Corollary~4.7(1)]{HM2015}. An explicit exact flat 16-dimensional factor for $\Wplus$ is the equal-weight controlled sum of four diagonal unitaries $\operatorname{diag}(1,s,t)$, $s,t\in\{\pm1\}$, and, for each transposition $(i,j)$, its symmetric permutation matrix with remaining diagonal sign $\pm1$, each choice repeated twice. Sign averaging annihilates all unwanted cross terms. Each $\ket{ii}\bra{ii}$ coefficient is $1/6$, and each distinct-pair diagonal or swap coefficient is $1/12$. This is exactly $(I+F)/12$.
+
+For the stationary zero-purity upper, use $\lfloor D/3\rfloor$ boundary blocks and the at most two leftover identity blocks in a dyadic bath. For waveform baselines $\Gamma_k=\Theta_{\min(\sigma b(k/n)/\sqrt n,0)}$, write $\Gamma_k=\alpha_k\Theta_0+(1-\alpha_k)\Wplus$. Use $\lfloor D\alpha_k/3\rfloor$ boundary blocks, $\lfloor D(1-\alpha_k)/16\rfloor$ symmetric blocks, and the remaining fewer than 19 identity dimensions. The removed mass is less than $19/D$, which bounds the half-diamond error. Taking $D\ge n^3$ gives $o(1)$ adaptive hybrid error. The exact ledger is
+\[
+ Q=\log D+\lceil\log(n+1)\rceil,\quad
+ P=\lceil\log(n+1)\rceil,\quad C=0,\quad J=(n-1)\log D
+\]
+for waveform service; the stationary case omits the clock. The bath uses its entire dyadic space, so there is no padding deficit.
+
+Conditional on a $\Wminus/\Wplus$ word, every observer's output state is the same for target and baseline. Thus their adaptive distance is bounded by coin-word total variation, and support tests attain that bound. In positive waveform blocks, the log-likelihood ratio converges under baseline to $N(-E_+/2,E_+)$ and under target to $N(E_+/2,E_+)$. Taylor expansion has total third-order remainder $O(n^{-1/2})$; the independent bounded-array central limit theorem and the likelihood-ratio test give total variation $2\Ncdf(\sqrt{E_+}/2)-1$. Negative blocks agree exactly. This proves the attainability statements in Theorem~\ref{thm:edge}(a) and~(b).
+
+\subsection{Faithful mixed fuel and the certified upper slope}
+
+Let $v=(9,10,10)^T$. On system and bath qutrits let $U$ be SWAP outside the diagonal subspace $\spanop\{\ket{ii}\}$ and the reflection $I-2vv^T/281$ on it. Take
+\[
+ \rho=\operatorname{diag}(9/40,31/80,31/80).
+\]
+Its antisymmetric bath effect is
+\[
+ A=\operatorname{diag}(212521,221941,221941)/236883.
+\]
+Consequently its excess and source deficit are
+\begin{align*}
+ \Delta_*&=\Tr(\rho A)-p=8737/4263894,\\
+ d_*&=\frac{(9/40)\ln(27/40)+(31/40)\ln(93/80)}{\ln2},\qquad
+ c_*=d_*/\Delta_*=19.8967\ldots<19.897.
+\end{align*}
+These inequalities can be certified with the series
+$\ln x=2\sum_{j\ge0}z^{2j+1}/(2j+1)$, $z=(x-1)/(x+1)$, whose remainder after 64 terms is at most $2|z|^{129}/[129(1-z^2)]$. The script \texttt{verify/check\_fuel\_constants.py} rebuilds the contact and recomputes $A$, $\Delta_*$, $d_*$ and $c_*$ exactly.
+
+Make the contact exactly Werner by a counted uniform qutrit Clifford congruence twirl, a finite version of the twirl of Vollbrecht and Werner~\cite{VollbrechtWerner} and Mendl and Wolf~\cite{MendlWolf} used in~\cite[Definition~4.1 and Theorem~4.5]{HM2015}. The 216 projective Clifford representatives consist of nine Weyl operators times representatives of $\mathrm{SL}_2(\mathbb F_3)$, generated by Fourier and $\operatorname{diag}(1,1,\omega)$. Weyl characters are distinct on the eight nonidentity Paulis and the symplectic group is transitive on them. Thus conjugation on traceless $M_3$ is irreducible. The commutant dimension of $g\otimes\bar g$ is two; that of $g\otimes g$ is also two since both character-square averages are $\E|\Tr g|^4$. It contains $I,F$, so the congruence twirl is projection onto their span. Applied to a channel by input $g^T$ and output $g$, it preserves its antisymmetric weight and yields $\Theta_{\Delta_*}$.
+
+The resulting single contact has dimension $m_*=648$ and source $I_{216}/216\otimes\rho$, whose deficit is exactly $d_*$. We call this contact, with its source, a \emph{fuel block}. The flat $216$-dimensional part of the bath selects the Clifford element; no external seed is used.
+
+For $0<\delta\le\Delta_*/4$ choose a sufficiently large dyadic $D$, and put
+\[
+ b=D\bmod3\in\{1,2\},\quad\beta=16b/D,\quad
+ w=(\delta+p\beta)/\Delta_*,\quad N_{\mathrm f}=\lfloor wD/648\rfloor,\quad f=648N_{\mathrm f}/D.
+\]
+Use $N_{\mathrm f}$ fuel blocks, $(D-648N_{\mathrm f}-16b)/3$ boundary blocks and $b$ symmetric 16-dimensional blocks. Assign total source masses $w$, $1-w-\beta$, $\beta$ respectively, each with its specified internal source. The implemented channel is exactly
+\[
+ (1-w-\beta)\Theta_0+w\Theta_{\Delta_*}+\beta\Wplus=\Theta_\delta.
+\]
+The full physical deficit is
+\[
+ d_D=w d_*+D_{\mathrm{bits}}\bigl((1-w-\beta,w,\beta)\,\big\|\,
+                                  (1-f-\beta,f,\beta)\bigr).
+\]
+For $D\ge1296\Delta_*/\delta$ and sufficiently large fixed lower bounds, $f\ge w/2$, $w<1/2$ and all block counts are positive. The chi-squared upper bound gives
+\[
+ c_*\delta\le d_D
+ \le c_*\delta+\frac{32c_*}{D}
+                  +\frac{4\cdot648^2}{D^2w\ln2}.
+\]
+Taking $D$ arbitrarily large relative to $1/\delta$ proves the upper slope in \eqref{eq:slopes}. For $\delta=h/\sqrt n$ with fixed $h>0$, take $D\ge n^2$ with the other fixed bounds, so eventually $n^2\le D<2n^2$. Fresh independent full baths give
+\[
+ Q\le2\log n+1,\quad J=(n-1)Q,\quad
+ P+C=c_*n\delta+O(1/n),\quad\eps=0,
+\]
+with a constant depending on $h$. The same unitary is used every round, with no clock. All imports here are nonflat and their deficit is fully included in $C$. Independence before each use proves complete adaptive correctness, not just marginal correctness.
+
+\section{Exact-certificate supplement}\label{app:supplement}
+
+The directory \texttt{verify/certificates} contains \texttt{werner\_commutator\_c03\_exact.json}; its SHA-256 is
+\begin{center}\small\ttfamily
+f676207833025c93aac72b1afe8ee77b510\par
+5160c1c4935b78139102f7e719ca5
+\end{center}
+Words use symbols $0,\ldots,8$ for the nine $u_{ij}$, $9,\ldots,17$ for their adjoints, and $18$ for Hermitian $X$. Each block encodes its word basis, sparse rational polynomial columns and rational Gram upper triangle. Relation multipliers encode the exact identity in Appendix~\ref{app:energy}.
+
+The first checker, \texttt{verify/check\_certificate.py}, uses exact rational arithmetic. It derives the target from the definitions, expands all six index permutations, groups words only by real cyclic and adjoint trace identities, and checks rational positive definiteness. The second, \texttt{verify/certificates/rebuild\_full\_orbits.py}, also verifies that every supplied relation is a generated block-unitarity consequence, and rejects corrupted Gram and relation data. Direct finite-matrix tests are included only as normalization controls; the polynomial identity and exact positivity prove the dimension-independent result.
+
+\paragraph{AI assistance.}
+AI systems assisted with mathematical exploration, proof reconstruction, exact-certificate checks and manuscript preparation. The authors take responsibility for the content.
+
+
+
+\begin{thebibliography}{99}
+\bibitem{AnantharamanDelaroche} C.~Anantharaman-Delaroche, On ergodic theorems for free group actions on noncommutative spaces, Probab. Theory Related Fields \textbf{135} (2006), 520--546; \href{https://doi.org/10.1007/s00440-005-0456-1}{doi:10.1007/s00440-005-0456-1}.
+\bibitem{BMZ} A.~Bhattacharyya, A.~Mehta and Y.~Zhao, On the undecidability of quantum channel capacities, FOCS 2026; \href{https://arxiv.org/abs/2601.22471}{arXiv:2601.22471}.
+\bibitem{BHLP} F.~G.~S.~L.~Brand\~ao, A.~W.~Harrow, J.~R.~Lee and Y.~Peres, Adversarial hypothesis testing and a quantum Stein's lemma for restricted measurements, IEEE Trans. Inf. Theory \textbf{66} (2020), 5037--5054; \href{https://arxiv.org/abs/1308.6702}{arXiv:1308.6702}.
+\bibitem{CopePirandola} T.~Cope and S.~Pirandola, Adaptive estimation and discrimination of Holevo--Werner channels, Quantum Measurements and Quantum Metrology \textbf{4} (2017), 44--52; \href{https://arxiv.org/abs/1801.05441}{arXiv:1801.05441}.
+\bibitem{CoudronSlofstra} M.~Coudron and W.~Slofstra, Complexity lower bounds for computing the approximately-commuting operator value of non-local games to high precision; \href{https://arxiv.org/abs/1905.11635}{arXiv:1905.11635} (2019).
+\bibitem{ClosedMemory} S.~Douglas, Bath dimension and initial entropy for closed repeated use of a quantum channel; \href{https://arxiv.org/abs/2609.18267v1}{arXiv:2609.18267v1} (2026).
+\bibitem{Law} S.~Douglas and N.~Mghirbi, The memory and purity cost of immediate delivery, version 1.0.0, Zenodo (2026); \href{https://doi.org/10.5281/zenodo.23198907}{doi:10.5281/zenodo.23198907}. Numbered references are to this version.
+\bibitem{Memory} S.~Douglas and N.~Mghirbi, Causal quantum-channel simulation: memory beyond entropy, version 1.1.2, Zenodo (2026); \href{https://doi.org/10.5281/zenodo.23070870}{doi:10.5281/zenodo.23070870}.
+\bibitem{DJ} K.~Dykema and K.~Juschenko, Matrices of unitary moments, Math. Scand. \textbf{109} (2011), 225--239; \href{https://arxiv.org/abs/0901.0288}{arXiv:0901.0288}.
+\bibitem{FaistBertaBrandao} P.~Faist, M.~Berta and F.~G.~S.~L.~Brand\~ao, Thermodynamic capacity of quantum processes, Phys. Rev. Lett. \textbf{122} (2019), 200601; \href{https://arxiv.org/abs/1807.05610}{arXiv:1807.05610}.
+\bibitem{FaistBertaBrandao2021} P.~Faist, M.~Berta and F.~G.~S.~L.~Brand\~ao, Thermodynamic implementations of quantum processes, Comm. Math. Phys. \textbf{384} (2021), 1709--1750; \href{https://doi.org/10.1007/s00220-021-04107-w}{doi:10.1007/s00220-021-04107-w}; \href{https://arxiv.org/abs/1911.05563}{arXiv:1911.05563}. Numbered references follow arXiv:1911.05563v3.
+\bibitem{FanizzaEtAl} M.~Fanizza, L.~Kroell, A.~Mehta, C.~Paddock, D.~Rochette, W.~Slofstra and Y.~Zhao, The NPA hierarchy does not always attain the commuting operator value; \href{https://arxiv.org/abs/2510.04943}{arXiv:2510.04943} (2025). Numbered references follow arXiv:2510.04943v4.
+\bibitem{Fritz} T.~Fritz, Tsirelson's problem and Kirchberg's conjecture, Rev. Math. Phys. \textbf{24} (2012), 1250012; \href{https://arxiv.org/abs/1008.1168}{arXiv:1008.1168}.
+\bibitem{FuMillerSlofstra} H.~Fu, C.~A.~Miller and W.~Slofstra, The membership problem for constant-sized quantum correlations is undecidable, Comm. Math. Phys. \textbf{406} (2025), 96; \href{https://arxiv.org/abs/2101.11087}{arXiv:2101.11087}.
+\bibitem{GhosalEtAl} P.~Ghosal, P.~Halder, A.~Patra and A.~Sen(De), Quantum hypothesis testing of non-mixed-unitarity: a multifaceted hierarchy of quantum channel discrimination; \href{https://arxiv.org/abs/2609.40355}{arXiv:2609.40355} (2026).
+\bibitem{GirottiKiukasGuta} F.~Girotti, J.~Kiukas and M.~Gu\c{t}\u{a}, Asymptotic statistical theory of irreducible quantum Markov chains; \href{https://arxiv.org/abs/2603.20761}{arXiv:2603.20761} (2026).
+\bibitem{GJN} A.~Goldenshluger, A.~Juditsky and A.~Nemirovski, Hypothesis testing by convex optimization, Electron. J. Stat. \textbf{9} (2015), 1645--1712; \href{https://arxiv.org/abs/1311.6765}{arXiv:1311.6765}.
+\bibitem{GutaKiukas} M.~Gu\c{t}\u{a} and J.~Kiukas, Equivalence classes and local asymptotic normality in system identification for quantum Markov chains, Comm. Math. Phys. (2015), \href{https://doi.org/10.1007/s00220-014-2253-0}{doi:10.1007/s00220-014-2253-0}; \href{https://arxiv.org/abs/1402.3535}{arXiv:1402.3535}.
+\bibitem{HM2011} U.~Haagerup and M.~Musat, Factorization and dilation problems for completely positive maps on von Neumann algebras, Comm. Math. Phys. \textbf{303} (2011), 555--594; \href{https://arxiv.org/abs/1009.0778}{arXiv:1009.0778}. Proposition~2.8 is Lemma~2.8 in arXiv:1009.0778v1.
+\bibitem{HM2015} U.~Haagerup and M.~Musat, An asymptotic property of factorizable completely positive maps and the Connes embedding problem, Comm. Math. Phys. \textbf{338} (2015), 721--752; \href{https://arxiv.org/abs/1408.6476}{arXiv:1408.6476}. Numbered references follow arXiv:1408.6476v1.
+\bibitem{HarrisEtAl} S.~J.~Harris, R.~H.~Levene, V.~I.~Paulsen, S.~Plosker and M.~Rahaman, Schur multipliers and mixed unitary maps, J. Math. Phys. \textbf{59} (2018), 112201; \href{https://arxiv.org/abs/1807.06491}{arXiv:1807.06491}.
+\bibitem{JS} J.~Jacod and A.~N.~Shiryaev, Limit Theorems for Stochastic Processes, 2nd ed., Springer (2003).
+\bibitem{MIP} Z.~Ji, A.~Natarajan, T.~Vidick, J.~Wright and H.~Yuen, $\mathrm{MIP}^*=\mathrm{RE}$; \href{https://arxiv.org/abs/2001.04383}{arXiv:2001.04383} (2020).
+\bibitem{JungeEtAl} M.~Junge, M.~Navascu\'es, C.~Palazuelos, D.~P\'erez-Garc\'ia, V.~B.~Scholz and R.~F.~Werner, Connes' embedding problem and Tsirelson's problem, J. Math. Phys. \textbf{52} (2011), 012102; \href{https://arxiv.org/abs/1008.1142}{arXiv:1008.1142}.
+\bibitem{Kirchberg} E.~Kirchberg, On nonsemisplit extensions, tensor products and exactness of group $C^*$-algebras, Invent. Math. \textbf{112} (1993), 449--489, Proposition~4.6.
+\bibitem{Scalable} G.~Kutyniok, K.~A.~Okoudjou, F.~Philipp and E.~K.~Tuley, Scalable frames; \href{https://arxiv.org/abs/1204.1880}{arXiv:1204.1880} (2012).
+\bibitem{LandauStreater} L.~J.~Landau and R.~F.~Streater, On Birkhoff's theorem for doubly stochastic completely positive maps of matrix algebras, Linear Algebra Appl. \textbf{193} (1993), 107--127.
+\bibitem{LSBNW} S.~H.~Lie, J.~Son, P.~Boes, N.~H.~Y.~Ng and H.~Wilming, Thermal operations from informational equilibrium, Phys. Rev. Lett. \textbf{137} (2026), 030403; \href{https://doi.org/10.1103/lm3h-c5f5}{doi:10.1103/lm3h-c5f5}; \href{https://arxiv.org/abs/2507.16637}{arXiv:2507.16637}. Numbered references follow arXiv:2507.16637v1.
+\bibitem{MastelSlofstra} K.~Mastel and W.~Slofstra, Two prover perfect zero knowledge for $\mathrm{MIP}^*$; \href{https://arxiv.org/abs/2404.00926}{arXiv:2404.00926} (2024). Numbered references follow arXiv:2404.00926v2.
+\bibitem{MendlWolf} C.~B.~Mendl and M.~M.~Wolf, Unital quantum channels---convex structure and revivals of Birkhoff's theorem, Comm. Math. Phys. \textbf{289} (2009), 1057--1096; \href{https://arxiv.org/abs/0806.2820}{arXiv:0806.2820}.
+\bibitem{RationalChannels} N.~Mghirbi and S.~Douglas, Factorizable rational quantum channels at an explicit distance from finite tracial baths, version 2.0.0, Zenodo (2026); \href{https://doi.org/10.5281/zenodo.23196593}{doi:10.5281/zenodo.23196593}.
+\bibitem{Musat} M.~Musat, The Connes--Kirchberg Problem and infinite-dimensional phenomena in quantum information theory; \href{https://arxiv.org/abs/2512.00432}{arXiv:2512.00432} (2025).
+\bibitem{MusatRordam21} M.~Musat and M.~R\o rdam, Factorizable maps and traces on the universal free product of matrix algebras, Int. Math. Res. Not. IMRN \textbf{2021}, no.~23, 17951--17970; \href{https://arxiv.org/abs/1903.10182}{arXiv:1903.10182}. Numbered references follow arXiv:1903.10182v4.
+\bibitem{NatarajanZhang} A.~Natarajan and T.~Zhang, Quantum free games; \href{https://arxiv.org/abs/2302.04322}{arXiv:2302.04322} (2023).
+\bibitem{NPA} M.~Navascu\'es, S.~Pironio and A.~Ac\'in, A convergent hierarchy of semidefinite programs characterizing the set of quantum correlations, New J. Phys. \textbf{10} (2008), 073013; \href{https://arxiv.org/abs/0803.4290}{arXiv:0803.4290}.
+\bibitem{Ozawa} N.~Ozawa, About the Connes embedding conjecture: algebraic approaches, Jpn. J. Math. \textbf{8} (2013), 147--183; \href{https://arxiv.org/abs/1212.1700}{arXiv:1212.1700}.
+\bibitem{PSSTW} V.~I.~Paulsen, S.~Severini, D.~Stahlke, I.~G.~Todorov and A.~Winter, Estimating quantum chromatic numbers, J. Funct. Anal. \textbf{270} (2016), 2188--2222; \href{https://arxiv.org/abs/1407.6918}{arXiv:1407.6918}.
+\bibitem{RevuzYor} D.~Revuz and M.~Yor, \emph{Continuous Martingales and Brownian Motion}, 3rd ed., Springer, Berlin, 1999.
+\bibitem{RybarZiman} T.~Ryb\'ar and M.~Ziman, Repeatable quantum memory channels, Phys. Rev. A \textbf{78} (2008), 052114; \href{https://arxiv.org/abs/0808.3851}{arXiv:0808.3851}.
+\bibitem{Slofstra19} W.~Slofstra, The set of quantum correlations is not closed, Forum Math. Pi \textbf{7} (2019), e1; \href{https://arxiv.org/abs/1703.08618}{arXiv:1703.08618}.
+\bibitem{SlofstraVidick} W.~Slofstra and T.~Vidick, Entanglement in non-local games and the hyperlinear profile of groups, Ann. Henri Poincar\'e \textbf{19} (2018), 2979--3005; \href{https://arxiv.org/abs/1711.10676}{arXiv:1711.10676}.
+\bibitem{vanderVaart} A.~W.~van der Vaart, \emph{Asymptotic Statistics}, Cambridge University Press, Cambridge, 1998.
+\bibitem{VollbrechtWerner} K.~G.~H.~Vollbrecht and R.~F.~Werner, Entanglement measures under symmetry, Phys. Rev. A \textbf{64} (2001), 062307; \href{https://arxiv.org/abs/quant-ph/0010095}{arXiv:quant-ph/0010095}.
+\bibitem{WangZhi} J.~Wang and L.~Zhi, An explicit polynomial counterexample to Connes' embedding conjecture; \href{https://arxiv.org/abs/2610.01536}{arXiv:2610.01536} (2026).
+\bibitem{WernerHolevo} R.~F.~Werner and A.~S.~Holevo, Counterexample to an additivity conjecture for output purity of quantum channels, J. Math. Phys. \textbf{43} (2002), 4353--4357; \href{https://arxiv.org/abs/quant-ph/0203003}{arXiv:quant-ph/0203003}.
+\bibitem{WildeEtAl} M.~M.~Wilde, M.~Berta, C.~Hirche and E.~Kaur, Amortized channel divergence for asymptotic quantum channel discrimination; \href{https://arxiv.org/abs/1808.01498}{arXiv:1808.01498}; Lett. Math. Phys. \textbf{110} (2020), 2277--2336.
+\end{thebibliography}
+\end{document}
