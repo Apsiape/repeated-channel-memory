@@ -2,7 +2,9 @@
 
 Seth Douglas and Nidhal Mghirbi, October 2026.
 
-This repository holds the paper, its LaTeX source and the finite checks that accompany it.
+This repository holds the paper, its LaTeX source and the finite checks that accompany it. It is version 1.0.0
+(doi:10.5281/zenodo.23199341) of the Zenodo record doi:10.5281/zenodo.23199340; that concept DOI always resolves
+to the latest version.
 
 A device that applies a quantum channel over and over must release each output before the next input arrives.
 How much memory does it need? Suppose every fresh qubit the device receives is maximally mixed. Companion work
