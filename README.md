@@ -19,7 +19,7 @@ grows more slowly than the number of uses. Outside it, a channel needs linear me
   factorizable channel with a flat probe can be repeated with sublinear memory from maximally mixed qubits;
   Schur channels already suffice.
 - **Just past the line, the cost switches on at the statistical scale.** For the qutrit Werner–Holevo family at
-  distance h/√n beyond its boundary point, independent uses of the boundary channel reach error 2Φ(h/2σ) − 1 in
+  distance h/√n beyond its boundary point, independent uses of the boundary channel reach error 2Φ(h/(2σ)) − 1 in
   the limit, where Φ is the standard normal distribution function and σ = 5√2/27. No device supplied with purity
   o(√n) does better, whatever its memory. For exact service, purity grows linearly in the distance along this
   family but only quadratically along an explicit six-level direction; tensoring the two puts both directions at
