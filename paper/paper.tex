@@ -41,9 +41,9 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-A device that applies a quantum channel over and over must release each output before the next input arrives. How much memory does it need? Suppose every fresh qubit the device receives is maximally mixed. In companion work we showed that the answer then turns on one set: the channels that a unitary with a finite, maximally mixed bath implements, exactly or in the limit. A channel in this set with a flat probe, an input that leaves its environment maximally mixed, can be served with sublinear memory. A channel outside the set needs linear memory at small error, however many qubits the device exchanges.
+A device that applies a quantum channel over and over must release each output before the next input arrives. How much memory does it need? Suppose every fresh qubit the device receives is maximally mixed. In companion work we showed that the answer then turns on one set: the channels that a unitary with a finite, maximally mixed bath implements, exactly or in the limit. A channel in this set with a flat probe, an input that leaves its environment maximally mixed, can be served with sublinear memory. A channel outside the set needs linear memory at small error, however many qubits the device exchanges. Here we prove a strong converse: outside the set, a device with sublinear memory fails with probability tending to one.
 
-No algorithm can decide on which side of this line a channel lies. A computable map sends each program to an explicit Schur channel with Gaussian-rational entries. If the program halts, logarithmic memory suffices; if it runs forever, linear memory is needed at an error computed from the program. The same line recasts Connes' embedding problem. It has a positive answer exactly when every factorizable channel with a flat probe can be served with sublinear memory; Schur channels already suffice.
+No algorithm can decide on which side of this line a channel lies. A computable map sends each program to an explicit Schur channel with Gaussian-rational entries. If the program halts, logarithmic memory suffices; if it runs forever, linear memory is needed at every fixed error, for example $1/2$. The same line recasts Connes' embedding problem. It has a positive answer exactly when every factorizable channel with a flat probe can be served with sublinear memory; Schur channels already suffice.
 
 Just past the line, the cost switches on at the statistical scale. Take the qutrit Werner--Holevo family at distance $h/\sqrt n$ beyond its boundary point. Independent uses of the boundary channel imitate it with error tending to $2\Phi(h/(2\sigma))-1$, where $\Phi$ is the standard normal distribution function and $\sigma=5\sqrt2/27$. We prove that no device drawing on purity that grows more slowly than $\sqrt n$ does better, whatever its memory.
 \end{abstract}
@@ -55,13 +55,16 @@ A channel specifies what a device does once. It does not specify what resources 
 We count three resources. The memory $Q$ is the number of qubits kept between uses. The exchange $J$ is the number of qubits handed over for good and replaced by fresh ones. The supplied purity $B=P+C$ is the purity of the initial memory and of all imports. The error is measured on the whole experiment, against an observer who chooses inputs adaptively and keeps quantum references. Ryb\'ar and Ziman introduced repeated use of one device without resets: one fixed unitary acts on a finite memory, and each use must induce the channel exactly on uncorrelated inputs~\cite{RybarZiman}. Here the unitaries may depend on the round, memory may be exchanged, inputs may be adaptive and entangled with references, and the error is approximate and measured on the whole experiment.
 
 \paragraph{The line.}
-Unless we say otherwise, every imported qubit is maximally mixed. The free building blocks are channels implemented by one unitary acting on the input and a finite bath that starts maximally mixed. Ryb\'ar and Ziman proposed such devices, with a reset after each use~\cite[Section~IV]{RybarZiman}. Let $\K_d$ be the closure of these channels on $M_d$. In companion work we proved that $\K_d$ is the dividing line~\cite[Theorem~3.2(b)]{Memory}, \cite[Theorem~4.1]{Law}. A channel in $\K_d$ with a \emph{flat probe}, an input that leaves its environment maximally mixed, can be served with sublinear memory. A channel outside $\K_d$ needs linear supplied purity at any exchange whenever its error is below its distance from $\K_d$, and hence linear memory. For unital channels the cost comes from immediate delivery: once outputs may wait in batches much longer than $\log n$, a unital channel needs purity rate zero~\cite[Theorem~3.5]{Law}. Section~\ref{sec:line} recalls these results. This paper asks where the line runs and what happens next to it.
+Unless we say otherwise, every imported qubit is maximally mixed. The free building blocks are channels implemented by one unitary acting on the input and a finite bath that starts maximally mixed. Ryb\'ar and Ziman proposed such devices, with a reset after each use~\cite[Section~IV]{RybarZiman}. Let $\K_d$ be the closure of these channels on $M_d$. In companion work we proved that $\K_d$ is the dividing line~\cite[Theorem~3.2(b)]{Memory}, \cite[Theorem~4.1]{Law}. A channel in $\K_d$ with a \emph{flat probe}, an input that leaves its environment maximally mixed, can be served with sublinear memory. A channel outside $\K_d$ needs linear supplied purity at any exchange whenever its error is below its distance from $\K_d$, and hence linear memory; we show below that the restriction on the error can be dropped. For unital channels the cost comes from immediate delivery: once outputs may wait in batches much longer than $\log n$, a unital channel needs purity rate zero~\cite[Theorem~3.5]{Law}. Section~\ref{sec:line} recalls these results. This paper asks where the line runs and what happens next to it.
 
 \paragraph{No algorithm can locate the line.}
-Our main result is that the line cannot be located by any algorithm (Theorem~\ref{thm:undecidable}). A computable map sends each program to an explicit Schur channel with Gaussian-rational entries. If the program halts, its channel has an exact finite tracial factorization and logarithmic memory suffices. If it runs forever, its channel lies at a distance $g_M>0$ outside $\K_d$, computed from the program, and every device needs linear memory at error $g_M/4$. The two branches use the same import and exchange contract, so no algorithm can decide whether memory grows logarithmically or linearly. The growth rate of the least memory is not computable (Corollary~\ref{cor:rate}), and neither is the growth rate of the smallest bath that sustains closed repeated use (Corollary~\ref{cor:closed}). The second settles a point left open in~\cite{ClosedMemory}.
+Our main result is that the line cannot be located by any algorithm (Theorem~\ref{thm:undecidable}). A computable map sends each program to an explicit Schur channel with Gaussian-rational entries. If the program halts, its channel has an exact finite tracial factorization and logarithmic memory suffices. If it runs forever, its channel lies at a distance $g_M>0$ outside $\K_d$, computed from the program, and every device needs linear memory at every fixed error, for example $1/2$. The two branches use the same import and exchange contract and the same error, so no algorithm can decide whether memory grows logarithmically or linearly. The growth rate of the least memory is not computable (Corollary~\ref{cor:rate}), and neither is the growth rate of the smallest bath that sustains closed repeated use (Corollary~\ref{cor:closed}). The second settles a point left open in~\cite{ClosedMemory}.
+
+\paragraph{Far from the line.}
+The fixed-error statement rests on a strong converse (Theorem~\ref{thm:strong}). Outside $\K_d$, a device whose supplied purity grows sublinearly fails with probability tending to one, at any memory and any exchange. With maximally mixed imports and sublinear memory, the probability of success decays exponentially. For ordinary supplied purity the decay is only inverse-linear, and this is sharp: a device can hide linear purity in a rare pure branch (Proposition~\ref{prop:coin}). The exponential form holds for the collision purity of the supplies, which sees such branches. The cost is visible to a cheap observer: a bounded number of randomly placed checks already exposes it (Corollary~\ref{cor:spot}), whereas in the critical window below, checks on $o(n)$ rounds see nothing. The proof turns local tracialization into a contraction of the Hilbert--Schmidt norm of the device's state, one round at a time, without conditioning on later outcomes.
 
 \paragraph{Connes' embedding problem.}
-The line also gives a memory form of Connes' embedding problem (Theorem~\ref{thm:connes}). It has a positive answer exactly when every factorizable channel with a flat probe can be served with sublinear memory, and Schur channels already suffice. The import condition matters: fresh pure imports serve any channel with constant memory. The static equivalence is due to Haagerup and Musat, who showed that Connes' problem has a positive answer exactly when every factorizable channel lies in $\K_d$, already through Schur channels~\cite[Theorems~3.6 and~3.7]{HM2015}. Our contribution is a flat-completion lemma: every matrix of unitary moments is a corner of one whose Schur channel has a flat probe, so the memory theorem applies to it. For gadget channels such a completion is in~\cite[Proposition~J.2]{Memory}. Since $\mathrm{MIP}^*=\mathrm{RE}$~\cite{MIP}, some factorizable channel with a flat probe needs linear memory at small error. One can be written down: run Theorem~\ref{thm:undecidable} on a program that provably never halts and apply the effective flat completion (Remark~\ref{rem:flat-undecidable}). The result has algebraic entries but astronomical size.
+The line also gives a memory form of Connes' embedding problem (Theorem~\ref{thm:connes}). It has a positive answer exactly when every factorizable channel with a flat probe can be served with sublinear memory, and Schur channels already suffice. The import condition matters: fresh pure imports serve any channel with constant memory. The static equivalence is due to Haagerup and Musat, who showed that Connes' problem has a positive answer exactly when every factorizable channel lies in $\K_d$, already through Schur channels~\cite[Theorems~3.6 and~3.7]{HM2015}. Our contribution is a flat-completion lemma: every matrix of unitary moments is a corner of one whose Schur channel has a flat probe, so the memory theorem applies to it. For gadget channels such a completion is in~\cite[Proposition~J.2]{Memory}. Since $\mathrm{MIP}^*=\mathrm{RE}$~\cite{MIP}, some factorizable channel with a flat probe needs linear memory at every fixed error. One can be written down: run Theorem~\ref{thm:undecidable} on a program that provably never halts and apply the effective flat completion (Remark~\ref{rem:flat-undecidable}). The result has algebraic entries but astronomical size.
 
 \paragraph{Just past the line.}
 How does the cost switch on? Take the qutrit Werner--Holevo family, whose boundary point in $\K_3$ was found by Haagerup and Musat~\cite{HM2015}. At distance $h/\sqrt n$ beyond it, independent uses of the boundary channel imitate the target with error tending to $2\Ncdf(h/(2\sigma))-1$, where $\sigma=5\sqrt2/27$. This is the classical value for a Gaussian shift~\cite{CopePirandola,WildeEtAl,vanderVaart}. We prove that no device supplied with $o(\sqrt n)$ purity does better, however large and correlated its memory, and whatever its exchange (Theorem~\ref{thm:edge}). With maximally mixed imports the same holds for memory $o(\sqrt n)$. For exact service, at unrestricted memory, the supplied purity grows linearly in the distance along this family but only quadratically along an explicit six-level Schur direction. Tensoring the two channels gives one boundary point with outward directions of both kinds, so the exact-service onset depends on the direction of departure, not only on the boundary point (Theorem~\ref{thm:onsets}).
@@ -74,7 +77,7 @@ Steps (i) and (ii) of the proof of Theorem~\ref{thm:undecidable} combine two exi
 The static characterization of $\K_d$ is due to Haagerup and Musat~\cite{HM2015} and to Musat and R\o rdam~\cite{MusatRordam21}. The Schur closure criterion is in~\cite[Proposition~2.8]{HM2011}, \cite[proof of Theorem~3.7]{HM2015} and~\cite[Proposition~3.9]{Musat}, with an elementary proof in~\cite{HarrisEtAl}. At the Werner boundary, the flat case of our bound for correlated devices is Haagerup and Musat's~\cite[Lemmas~5.4 and~5.5]{HM2015}. Optimal error exponents are known when an adversary picks each conditional law adaptively from fixed closed convex sets~\cite[Theorems~2 and~7]{BHLP}. Quantum local asymptotic normality holds for smoothly parametrized quantum Markov chains with fixed, identically prepared inputs~\cite{GutaKiukas,GirottiKiukasGuta}. Neither covers devices constrained only by a total supply of purity, at constant error. Stein exponents for testing a channel, including the qutrit Werner--Holevo channel, against the mixed-unitary set are known for parallel strategies~\cite{GhosalEtAl}.
 
 \paragraph{Organization.}
-Section~\ref{sec:model} fixes the model. Section~\ref{sec:line} recalls the line. Section~\ref{sec:undecidable} proves that it cannot be located. Section~\ref{sec:connes} gives the memory form of Connes' problem. Sections~\ref{sec:edge} and~\ref{sec:soft} treat the boundary. Section~\ref{sec:open} lists open questions. The appendices hold the undecidability construction, the energy certificate, the statistical comparison and the finite constructions.
+Section~\ref{sec:model} fixes the model. Section~\ref{sec:line} recalls the line. Section~\ref{sec:undecidable} proves that it cannot be located. Section~\ref{sec:connes} gives the memory form of Connes' problem. Sections~\ref{sec:edge} and~\ref{sec:soft} treat the boundary. Section~\ref{sec:strong} proves the strong converse. Section~\ref{sec:open} lists open questions. The appendices hold the undecidability construction, the energy certificate, the statistical comparison, the finite constructions and the proof of the strong converse.
 
 
 \section{Model and conventions}\label{sec:model}
@@ -142,24 +145,24 @@ Within $\K_d$ the memory depends on how well the channel's group relations can b
 
 We use the causal services of Section~\ref{sec:model}: unitaries may depend on the round, each output leaves before the next input, exchange happens between rounds, the initial deficit $P$ is charged, and the error is the complete adaptive error. For a channel $\Phi$ on $M_d$ let $Q_{\min}(\Phi,n,\eps)$ be the least memory of an $n$-round service with maximally mixed imports ($C=0$), exchange $J\le nd$ and error at most $\eps$. Note that $P\le Q$ always holds.
 
-\begin{theorem}[Undecidable memory growth]\label{thm:undecidable}
+\begin{theorem}[Undecidable memory growth, at every fixed error]\label{thm:undecidable}
 There is a total computable map $M\mapsto(d_M,B_M,g_M)$ from Turing machines, run on the empty tape, with the following properties. Here $d_M=1+2q_Ma_M\ge5$ for integers $q_M,a_M$ computed along the way, $B_M$ is a positive semidefinite $d_M\times d_M$ matrix with entries in $\mathbb Q(i)$ and unit diagonal, and
 \[
  g_M=\frac{1}{256^2\,a_M^6\,d_M}.
 \]
-The Schur channel $\Phi_M(X)=B_M\circ X$ is unital and factorizable through a finite von Neumann algebra~\cite[Proposition~2.8]{HM2011}. Put $\eps_M=g_M/4$.
+The Schur channel $\Phi_M(X)=B_M\circ X$ is unital and factorizable through a finite von Neumann algebra~\cite[Proposition~2.8]{HM2011}. Fix any error $0<\eps<1$, for example $\eps=1/2$.
 \begin{enumerate}[label=(\alph*),itemsep=3pt]
-\item If $M$ halts, $\Phi_M$ has an exact finite tracial factorization, and $Q_{\min}(\Phi_M,n,\eps_M)=O(\log n)$.
-\item If $M$ runs forever, $\dist_J(\Phi_M,\K_{d_M})\ge g_M$. Every service of $\Phi_M$ with maximally mixed imports and error at most $\eps_M$ has, at any exchange,
+\item If $M$ halts, $\Phi_M$ has an exact finite tracial factorization, and $Q_{\min}(\Phi_M,n,\eps)=O(\log n)$.
+\item If $M$ runs forever, $\dist_J(\Phi_M,\K_{d_M})\ge g_M$. Every service of $\Phi_M$ with maximally mixed imports and error at most $\eps$ has, at any exchange and for every $n\ge8g_M^{-2}\ln(2/(1-\eps))$,
 \[
- Q\ge\frac{9g_M^2}{32\ln2}\,n,
+ Q\ge0.3\,g_M^2\,n-2\log\frac2{1-\eps},
 \]
-and $Q_{\min}(\Phi_M,n,\eps_M)\le n\lceil\log d_M\rceil$.
+and $Q_{\min}(\Phi_M,n,\eps)\le n\lceil\log d_M\rceil$. At error $\eps\le g_M/4$ also $Q\ge9g_M^2n/(32\ln2)$ for every $n$.
 \end{enumerate}
-Consequently no algorithm decides, for every channel in this family, whether its least memory grows logarithmically or linearly.
+Consequently, at every fixed error, no algorithm decides, for every channel in this family, whether its least memory grows logarithmically or linearly.
 \end{theorem}
 
-The dimension, the gap, the error and all constants depend on $M$; the constant in part~(a) depends on a bath dimension that is not computable from $M$. Nothing is claimed at a fixed dimension or a universal error. Part~(a) is an upper bound, not a matching lower bound. The input is an exact description of the channel, not a black box. The reduction also works with any error policy that eventually falls below $g_M/4$, for example $\eps_n=\min(1/16,1/n)$.
+The error is one number for the whole family; it does not depend on the program. The dimension, the gap and the onset $8g_M^{-2}\ln(2/(1-\eps))$ of the linear bound depend on $M$, and the constant in part~(a) depends on a bath dimension that is not computable from $M$. Nothing is claimed at a fixed dimension. Part~(a) is an upper bound, not a matching lower bound. The input is an exact description of the channel, not a black box. Errors that tend to one slowly are also covered: the bound in part~(b) stays linear while $\log(1/(1-\eps_n))\le cn$ with $c<0.15\,g_M^2$.
 
 The proof composes three steps; Appendix~\ref{app:undecidable} gives it in full.
 \begin{enumerate}[label=(\roman*),itemsep=2pt]
@@ -167,10 +170,10 @@ The proof composes three steps; Appendix~\ref{app:undecidable} gives it in full.
 \item \emph{Self-reference.} A program that dovetails $M$ with an exact search of the hierarchy of Navascu\'es, Pironio and Ac\'in~\cite{NPA}, applied to its own correlation through the recursion theorem, makes every output a valid commuting-operator correlation. The self-referential device, a machine that computes its own instance and halts at the first level of the hierarchy that refutes it, is from the explicit-example construction of Fanizza, Kroell, Mehta, Paddock, Rochette, Slofstra and Zhao~\cite[Section~4.2]{FanizzaEtAl}, where it is applied to the commuting-operator value of a game. We apply it to membership of a correlation in the commuting-operator set, uniformly in $M$.
 \item \emph{A quantitative transfer.} The correlation becomes a unitary-moment matrix $B_M$. A finite tracial channel close to $\Phi_M$ would yield a finite strategy winning with probability above $1/2$ (Lemma~\ref{lem:transfer}). This gives the gap $g_M$.
 \end{enumerate}
-The operational branches then follow from known resource theorems: an exact finite factor gives logarithmic memory~\cite[Theorem~6.1]{Memory}, and the purity floor of Theorem~\ref{thm:closure}(b) gives the linear lower bound. Ryb\'ar and Ziman's $n$-cell device gives the linear upper bound~\cite{RybarZiman}.
+The operational branches then follow from resource theorems. An exact finite factor gives logarithmic memory at every fixed error~\cite[Theorem~6.1]{Memory}. The strong converse of Theorem~\ref{thm:strong} gives the linear lower bound at every fixed error, and at error below $g_M/4$ the purity floor of Theorem~\ref{thm:closure}(b) gives the larger constant. Ryb\'ar and Ziman's $n$-cell device gives the linear upper bound~\cite{RybarZiman}.
 
 \begin{corollary}[The memory rate is not computable]\label{cor:rate}
-Let $q(\Phi,\eps)=\liminf_n Q_{\min}(\Phi,n,\eps)/n$. On the family of Theorem~\ref{thm:undecidable}, $q(\Phi_M,\eps_M)=0$ if $M$ halts and $q(\Phi_M,\eps_M)\ge9g_M^2/(32\ln2)$ otherwise. No algorithm computes $q(\Phi_M,\eps_M)$ to within $g_M^2/16$ for every $M$. The same holds for the zero-error limit $\lim_{\eps\downarrow0}q(\Phi_M,\eps)$.
+Let $q(\Phi,\eps)=\liminf_n Q_{\min}(\Phi,n,\eps)/n$. On the family of Theorem~\ref{thm:undecidable}, for every $\eps\in(0,1)$, $q(\Phi_M,\eps)=0$ if $M$ halts and $q(\Phi_M,\eps)\ge0.3\,g_M^2$ otherwise. At any fixed error, no algorithm computes $q(\Phi_M,\eps)$ to within $g_M^2/8$ for every $M$. The same holds for the zero-error limit $\lim_{\eps\downarrow0}q(\Phi_M,\eps)$.
 \end{corollary}
 
 \begin{corollary}[The closed-bath rate is not computable]\label{cor:closed}
@@ -178,11 +181,11 @@ A closed device keeps one bath and never exchanges it. The least bath-dimension 
 \end{corollary}
 
 \begin{corollary}[An explicit Schur witness]\label{cor:explicit-schur}
-Apply Theorem~\ref{thm:undecidable} to a machine that provably runs forever. It produces an explicit Schur channel with entries in $\mathbb Q(i)$, factorizable, at Choi distance at least $g_M$ from $\K_{d_M}$, whose repeated use with maximally mixed imports needs linear memory at error below $g_M$. Its size is astronomical.
+Apply Theorem~\ref{thm:undecidable} to a machine that provably runs forever. It produces an explicit Schur channel with entries in $\mathbb Q(i)$, factorizable, at Choi distance at least $g_M$ from $\K_{d_M}$, whose repeated use with maximally mixed imports needs linear memory at every fixed error below one. Its size is astronomical.
 \end{corollary}
 
 \begin{remark}[Full Choi rank]\label{rem:full-rank}
-Hardness does not come from a singular Choi matrix. Mix in complete depolarization: $\Omega_M=(1-\eta)\Phi_M+\eta\,\mathrm{Dep}_d$ with $\eta=g_M/4$. Its Choi state has full rank. If $M$ halts, rational mixtures of finite factors combine exactly in one flat bath, so $\Omega_M$ still has an exact finite tracial factorization. If $M$ runs forever, $\dist_J(\Omega_M,\K_d)\ge3g_M/4$, and at error $g_M/4$ every service with maximally mixed imports has $Q\ge g_M^2n/(8\ln2)$.
+Hardness does not come from a singular Choi matrix. Mix in complete depolarization: $\Omega_M=(1-\eta)\Phi_M+\eta\,\mathrm{Dep}_d$ with $\eta=g_M/4$. Its Choi state has full rank. If $M$ halts, rational mixtures of finite factors combine exactly in one flat bath, so $\Omega_M$ still has an exact finite tracial factorization. If $M$ runs forever, $\dist_J(\Omega_M,\K_d)\ge3g_M/4$, so at every fixed error $\eps$ every service with maximally mixed imports has $Q\ge0.16\,g_M^2n-2\log(2/(1-\eps))$ for $n\ge15g_M^{-2}\ln(2/(1-\eps))$, and at error $g_M/4$ also $Q\ge g_M^2n/(8\ln2)$.
 \end{remark}
 
 \begin{remark}[Flat probes]\label{rem:flat-undecidable}
@@ -303,8 +306,9 @@ For the converse suppose Connes' problem has a negative answer. By~\eqref{eq:kir
 \begin{corollary}[Linear memory for a factorizable Schur channel]\label{cor:connes-negative}
 Some tightly weightable $X\in\G_N$ has $\Delta=\dist_J(S_X,\K_N)>0$, and every such $X$ has rank at least three. Every between-round service of $S_X$ with maximally mixed imports and error $\eps<\Delta$ has, at any exchange,
 \[
- Q_n\ge\frac{n(\Delta-\eps)^2}{2\ln2}.
+ Q_n\ge\frac{n(\Delta-\eps)^2}{2\ln2},
 \]
+and at every fixed error $\eps<1$, $Q_n\ge0.3\,n\Delta^2-2\log(2/(1-\eps))$ for $n\ge8\Delta^{-2}\ln(2/(1-\eps))$, by Theorem~\ref{thm:strong}.
 \end{corollary}
 
 \begin{proof}
@@ -405,6 +409,9 @@ The boundary contact of Haagerup and Musat~\cite[Theorem~5.6(1)]{HM2015} has bat
 For negative waveform intervals use $\Theta_{\delta}$ itself, which is a convex combination of $\Theta_0$ and $\Wplus$. The latter has an exact flat 16-dimensional factor. Dimension-ratio replication in a dyadic bath has error less than $19/D$ per round. For positive intervals use $\Theta_0$. A counted clock selects these prescribed contacts. The common coin-word argument and a triangular-array likelihood expansion give the matching limit in \eqref{eq:waveform}; details and every resource charge are in Appendix~\ref{app:upper}.
 
 If $\delta_n\sqrt n\to0$, the stationary boundary construction has vanishing error and no supplied purity. In the critical window, \eqref{eq:critical} determines the curve at zero leading purity, not the optimum at a positive leading budget of order $\sqrt n$.
+
+\paragraph{Sparse testing cannot see the window.}
+Suppose an observer tests only $k$ rounds, adaptively and with any references, and sends a fresh maximally mixed input in every other round. Its advantage in distinguishing $n$ uses of $\Theta_\delta$ from $n$ uses of $\Theta_0$ is at most $|\delta|\sqrt{k/2}/\sigma$, which is $(27/10)|h|\sqrt{k/n}$ at $\delta=h/\sqrt n$. Both channels are unital, so untested rounds reveal nothing. One use of $\Theta_\delta$ is a coin of bias $p+\delta$ followed by $\Wminus$ or $\Wplus$, so the observer's final state is a processing of $k$ independent coins; Pinsker's inequality, with the relative entropy of the coins bounded by their $\chi^2$-divergence $k\delta^2/\sigma^2$, gives the bound. Hence $k=o(n)$ tested rounds have vanishing advantage in the window, whereas at a fixed distance from $\K_3$ a bounded number of tested rounds suffices (Corollary~\ref{cor:spot}).
 
 \subsection{Exact service: onsets that depend on the direction}
 
@@ -565,10 +572,71 @@ A marginal bath map has production at most the original production: adjoining a 
 On the first ray, run the Werner construction of Appendix~\ref{app:upper} for the qutrit factor and a flat qubit source for $\Psi_0$; as the bath grows, the cost tends to $c_*nt$. On the second ray, padding need not add a bit per round. Prepare all $n$ flat qutrit boundary baths jointly, embed their $3^n$-dimensional tensor product once into qubits, and cycle the tensor factors after each use. This costs less than one bit of padding purity, no clock, and no imported purity for the qutrit factor; the qubit sources pay $nd(t)$. The price is memory: the device retains about $n\log3$ qubits. Padding each qutrit separately would cost about $0.415n$ bits whatever $t$ is. Padding blocks of $k$ qutrits costs less than $n/k$ bits with memory $O(k)$, so the quadratic rate needs blocks of size of order $1/t^2$. This proves Theorem~\ref{thm:onsets}(c).
 
 
+\section{Far from the line: a strong converse}\label{sec:strong}
+
+Theorem~\ref{thm:closure}(b) charges linear purity only while the error stays below the distance $\Delta$ to $\K_d$. It leaves open whether a device could buy a larger error, say $1/2$, cheaply. It cannot. Outside $\K_d$, a device that draws sublinear purity fails with probability tending to one, and with maximally mixed imports it needs linear memory at every fixed error below one.
+
+The exponential form of this statement needs a purity measure that sees rare pure branches. Collect the initial memory and all imports in one register of total dimension $D$, in their joint state $\Omega$; in the model of Section~\ref{sec:model} the imports are independent, so $\Omega$ is a product state. The supplied purity is $B=\log D-S(\Omega)$, which equals $P+C$. The \emph{collision purity} of the supplies is
+\[
+ B_2=\log\bigl(D\Tr\Omega^2\bigr),
+\]
+the R\'enyi-$2$ divergence of $\Omega$ from the maximally mixed state. Always $B\le B_2\le\log(D\norm{\Omega}_\infty)$, and with maximally mixed imports $B_2=\log(2^Q\Tr\beta_0^2)\le Q$. Correlated supplies are charged through their joint state: $B_2$ and $B$ are computed for $\Omega$ itself, never for its parts separately, so correlations among the supplies are never free.
+
+\begin{theorem}[Strong converse outside the line]\label{thm:strong}
+Let $\Delta=\dist_J(\Phi,\K_d)>0$. Every $n$-round service of $\Phi$, at any memory and any exchange, has error $\eps$ with
+\begin{enumerate}[label=(\alph*),itemsep=3pt]
+\item $1-\eps\le2^{B_2/2}e^{-n\Delta^2/10}+e^{-n\Delta^2/8}$;
+\item $1-\eps\le6.6\,(B+1)/(n\Delta^2)+e^{-n\Delta^2/8}$.
+\end{enumerate}
+In particular, services with $P=C=0$ have $1-\eps\le2e^{-n\Delta^2/10}$, and supplied purity $B_n=o(n)$ forces $\eps_n\to1$. With maximally mixed imports, for every $\eps\in(0,1)$ and every $n\ge8\Delta^{-2}\ln(2/(1-\eps))$,
+\[
+ Q\ \ge\ 0.3\,n\Delta^2-2\log\frac{2}{1-\eps}.
+\]
+\end{theorem}
+
+The two parts differ in kind. Part~(a) decays exponentially in $n$ whenever the collision purity grows at a rate below $0.28\,\Delta^2$ per round. Part~(b) decays only like $1/n$, and this is the truth for ordinary supplied purity: a rare pure branch can carry linear purity at small average cost.
+
+\begin{proposition}[A rare pure branch]\label{prop:coin}
+Let $\Phi$ have Kraus rank $r\ge2$, put $R=\lceil\log r\rceil$, and let $0\le p\le1$. One fixed unitary per round gives a service of $\Phi$ with
+\[
+ J=C=0,\qquad Q=1+nR,\qquad P=1-h_2(p)+pnR,\qquad \eps\le1-p.
+\]
+Consequently success $1-\eps\ge(B-1)/(nR)$ is achievable with supplied purity $B$ for $1\le B\le1+nR$, and at $B=cn$ the error stays at most $1-c/R+1/(nR)$.
+\end{proposition}
+
+Every channel outside $\K_d$ has Kraus rank at least two, since unitary conjugations lie in $\K_d$. So Proposition~\ref{prop:coin} applies to every channel that Theorem~\ref{thm:strong} covers: no bound that decays faster than $1/n$ can hold in terms of $B$, and the order $(B+1)/n$ in part~(b) is sharp up to constants that depend on the channel. The device has $B_2\ge nR+2\log p$, linear in $n$, so it is consistent with part~(a).
+
+\begin{proof}
+Let $V:\C^d\to\C^d\otimes(\C^2)^{\otimes R}$ be a Stinespring isometry of $\Phi$, completed to a unitary $W$ with $W(\psi\otimes\ket0)=V\psi$. The memory is a coin qubit and $n$ cells of $R$ qubits, initially
+\[
+ \beta_0=p\ket0\bra0\otimes\ket0\bra0^{\otimes nR}+(1-p)\ket1\bra1\otimes\tau_{2^R}^{\otimes n}.
+\]
+In every round, controlled on the coin being $0$, apply $W$ to the input and the first cell; then shift the cells cyclically by one place. On the branch where the coin is $0$, every round meets a fresh cell in $\ket0$, so the device applies exactly $n$ independent uses of $\Phi$, against any adaptive observer with references. The coin is never changed, so every observer's final state is $p$ times its ideal state plus $(1-p)$ times another state, and $\eps\le1-p$. There are no imports, and $P=Q-S(\beta_0)=1+nR-h_2(p)-(1-p)nR$. For the consequence take $p=(B-1)/(nR)$.
+\end{proof}
+
+The cost in Theorem~\ref{thm:strong} is not an artifact of an observer who tests every output. A bounded number of randomly placed checks already exposes it.
+
+\begin{corollary}[A few random checks suffice]\label{cor:spot}
+Let $\Delta=\dist_J(\Phi,\K_d)>0$. Some observer applies a fixed two-outcome test in only $k$ rounds, chosen uniformly at random with replacement, and sends a fresh maximally mixed input in every other round. Against every $n$-round service of $\Phi$, at any memory and any exchange, its distinguishing advantage $D$ satisfies
+\[
+ 1-D\le\frac{6.6\,(B+1)}{n\Delta^2}+e^{-n\Delta^2/128}+2e^{-k\Delta^2/128},
+\]
+and the same holds with $2^{B_2/2}e^{-n\Delta^2/10}$ in place of the first term. In particular, at a fixed error $\eps<1$, already $k=\lceil128\Delta^{-2}\ln(6/(1-\eps))\rceil$ checks, a number that does not depend on $n$, force $B\ge(1-\eps)n\Delta^2/20-1$ for every $n\ge128\Delta^{-2}\ln(3/(1-\eps))$.
+\end{corollary}
+
+The sampling step is standard spot-checking~\cite{BoumanFehr}; the point here is its consequence for the device. The tested rounds and the untested ones look the same to the device, since its input is maximally mixed in both, so the checks sample the record of the observer that tests every round. The proof is at the end of Appendix~\ref{app:strong}. Near the boundary the picture reverses: in the critical window of Theorem~\ref{thm:edge}, $k=o(n)$ checks have vanishing advantage (Section~\ref{sec:edge}).
+
+\paragraph{How the proof works.}
+Appendix~\ref{app:strong} gives the complete proof. An optimal test separates $\Phi$ from $\K_d$ by $\Delta$. One observer applies it to every output with a fresh maximally entangled reference and counts the passes. After each recorded outcome the device's register carries a subnormalized operator, and the pass and fail branches act on it by completely positive maps. The Hilbert--Schmidt norm of that operator serves as a potential. Local tracialization, applied to spectral projections, shows that a round can pass the test more often than the closure allows only by lowering the potential, at a linear rate once the test has a margin above the closure value. So the exponential moment of the pass count is at most that of independent rounds passing with probability $p_0+\Delta/3$, where $p_0$ is the closure value of the test, times a factor $2^{B_2/2}$ that the source fixes once, at the start. Ordinary supplied purity enters only through a data-processing step, which is why part~(b) is polynomial. Nothing is ever conditioned on a later outcome.
+
+\paragraph{Scope.}
+The constants are not optimized. The exponent $2$ on $\Delta$ cannot be lowered for general channels: along the six-level ray of Theorem~\ref{thm:onsets}(b), $\dist_J(\Psi_t,\K_6)\ge|t|/1443$ by~\eqref{eq:soft-gap}, while exact service costs $B\le nt^2\le1443^2n\Delta^2$. The argument needs a margin above the closure value, so it does not reach the critical window of Theorem~\ref{thm:edge}; there the Werner certificate of Theorem~\ref{thm:envelope} supplies the linear energy bound that a margin supplies here.
+
+
 \section{Open questions}\label{sec:open}
 
 \paragraph{Undecidability at fixed size.}
-In Theorem~\ref{thm:undecidable} the dimension, the gap and the error depend on the program. Is the growth question already undecidable for channels of one fixed dimension, or at one fixed error? For correlations, membership is undecidable already at constant size~\cite{FuMillerSlofstra}, but without a gap or a guarantee of membership in the commuting-operator set, so it does not yield factorizable channels of fixed dimension.
+In Theorem~\ref{thm:undecidable} the error is fixed, but the dimension and the gap depend on the program. Is the growth question already undecidable for channels of one fixed dimension? For correlations, membership is undecidable already at constant size~\cite{FuMillerSlofstra}, but without a gap or a guarantee of membership in the commuting-operator set, so it does not yield factorizable channels of fixed dimension.
 
 \paragraph{The optimal positive-purity critical window.}
 Theorem~\ref{thm:edge} determines the limiting error at $B=o(\sqrt n)$. At $\delta=h/\sqrt n$, error zero costs at most $c_*h\sqrt n+O(1/n)$ (Appendix~\ref{app:upper}). Between these, the optimum at $B\sim\beta\sqrt n$ is not determined, nor is it known whether fresh-source formation is optimal against general reuse and correlations. The best certified exact Werner slope lies between $5/(3\ln2)$ and $19.897$ bits per unit excess.
@@ -683,15 +751,15 @@ With $\gamma=1/(2a^2)$ the lemma gives $\dist_J(\Phi_M,\K_d)\ge1/(256^2a^6d)=g_M
 
 \emph{Halting branch.} $\Phi_M$ has an exact finite tracial factorization. The rolling-reservoir theorem~\cite[Theorem~6.1]{Memory} with slack one gives services with maximally mixed imports, exchange at most $n(H/2+1)\le n(\log d+1)\le nd$, and memory $O(\log(n/\eps))=O(\log n)$ at any fixed or inverse-polynomial error. Its constant depends on the bath dimension.
 
-\emph{Nonhalting branch.} Theorem~\ref{thm:closure}(b) holds for every channel at any exchange. With $C=0$, $\Delta\ge g_M$ and $\eps=g_M/4$ it gives $Q\ge n(3g_M/4)^2/(2\ln2)=9g_M^2n/(32\ln2)$. A bank of $n$ pure Stinespring environments, one per use, serves $\Phi_M$ exactly with $Q\le n\lceil\log d\rceil$, $J=0$ and $C=0$~\cite[Section~III]{RybarZiman}.
+\emph{Nonhalting branch.} Theorems~\ref{thm:closure}(b) and~\ref{thm:strong} hold for every channel at any exchange, and their bounds increase with the distance, so $\Delta\ge g_M$ may be used for $\Delta$. With maximally mixed imports, the memory bound of Theorem~\ref{thm:strong} gives the bound of part~(b) at every fixed error. With $C=0$ and $\eps\le g_M/4$, Theorem~\ref{thm:closure}(b) gives $Q\ge n(3g_M/4)^2/(2\ln2)=9g_M^2n/(32\ln2)$. A bank of $n$ pure Stinespring environments, one per use, serves $\Phi_M$ exactly with $Q\le n\lceil\log d\rceil$, $J=0$ and $C=0$~\cite[Section~III]{RybarZiman}.
 
-\emph{Corollary~\ref{cor:rate}.} The two branches give $q=0$ and $q\ge9g_M^2/(32\ln2)>g_M^2/4$. An approximation within $g_M^2/16$, compared with the threshold $g_M^2/8$, would decide halting. The zero-error limit has the same separation.
+\emph{Corollary~\ref{cor:rate}.} At every fixed $\eps$, the two branches give $q=0$ and $q\ge0.3\,g_M^2$. An approximation within $g_M^2/8$, compared with the threshold $0.15\,g_M^2$, would decide halting. The zero-error limit has the same separation.
 
 \emph{Corollary~\ref{cor:closed}.} By~\cite[Theorem~3.2(a)]{Memory}, $\kappa(\Phi)=0$ exactly when $\Phi\in\K_d$, and $\kappa(\Phi)\ge\dist_J(\Phi,\K_d)^2/(2\ln2)$. The two branches therefore differ in the closed-bath rate by at least $g_M^2/(4\ln2)$. The quantity $H(\Phi_M)$, a maximum of a continuous concave function over a compact set, can be computed to any precision. An approximation of the rate within $g_M^2/(16\ln2)$ would decide halting.
 
 \emph{Corollary~\ref{cor:explicit-schur}.} A machine that provably never halts lands in the nonhalting branch, and the map computes its channel.
 
-\emph{Remark~\ref{rem:full-rank}.} If $M$ halts, $\Phi_M$ and $\mathrm{Dep}_d$ have exact finite matrix factors and $\eta$ is rational; integer copies in a common flat bath combine them exactly. If $M$ runs forever, $d_J(\Omega_M,\Phi_M)\le\eta$, and the distance to the closed set $\K_d$ is $1$-Lipschitz.
+\emph{Remark~\ref{rem:full-rank}.} If $M$ halts, $\Phi_M$ and $\mathrm{Dep}_d$ have exact finite matrix factors and $\eta$ is rational; integer copies in a common flat bath combine them exactly. If $M$ runs forever, $d_J(\Omega_M,\Phi_M)\le\eta$, and the distance to the closed set $\K_d$ is $1$-Lipschitz. Then the memory bound of Theorem~\ref{thm:strong} with $\Delta\ge3g_M/4$ gives the coefficient $0.3\cdot9/16>0.16$ and the onset $8\cdot16/9<15$.
 
 \subsection{Effective flat completion}
 
@@ -956,14 +1024,138 @@ Words use symbols $0,\ldots,8$ for the nine $u_{ij}$, $9,\ldots,17$ for their ad
 
 The first checker, \texttt{verify/check\_certificate.py}, uses exact rational arithmetic. It derives the target from the definitions, expands all six index permutations, groups words only by real cyclic and adjoint trace identities, and checks rational positive definiteness. The second, \texttt{verify/certificates/rebuild\_full\_orbits.py}, also verifies that every supplied relation is a generated block-unitarity consequence, and rejects corrupted Gram and relation data. Direct finite-matrix tests are included only as normalization controls; the polynomial identity and exact positivity prove the dimension-independent result.
 
+
+\section{Proof of Theorem~\ref{thm:strong}}\label{app:strong}
+
+\paragraph{The test.}
+The set $\K_d$ is convex and compact (Section~\ref{sec:model}). The function $(E,\Psi)\mapsto\Tr[E(J(\Phi)-J(\Psi))]$ is affine in each argument on the effects $0\le E\le I$ of $\C^d\otimes\C^d$ and on $\K_d$, and the maximum of $\Tr[EX]$ over effects is $\norm X_1/2$ for traceless Hermitian $X$. By the minimax theorem some effect $E$ satisfies
+\[
+ q:=\Tr[E\,J(\Phi)]=p_0+\Delta,\qquad p_0:=\max_{\Psi\in\K_d}\Tr[E\,J(\Psi)].
+\]
+Fix this $E$. Since $\Delta$ is a trace distance between states, $\Delta\le1$.
+
+\paragraph{The observer.}
+In every round the observer sends half of a fresh $\ket{\Omega_d}$, keeps the other half as a reference, measures $\{E,I-E\}$ on the released output and its reference, and records the outcome $I_k\in\{0,1\}$. Let $S_n=\sum_kI_k$. In the ideal experiment $S_n$ is binomial with parameters $n$ and $q$. The record is a function of the observer's final state, so $\eps\ge\Prob_{\rm ideal}(A)-\Prob_{\rm real}(A)$ for every event $A$.
+
+\paragraph{One register.}
+Move every import to the start of its round (Section~\ref{sec:model}). Place the initial memory and all imports in one register $\C^D$ from the start, in their joint state $\Omega$. Each round then acts on the fresh input and the register by one unitary $U_k\in U(dD)$: swaps that bring in the round's imports, the round's unitary on the input and the accessible qubits, and swaps that move exports into slots that are never touched again. This changes neither the experiment nor $\Omega$.
+
+\paragraph{The round instrument.}
+For $U\in U(dD)$ and operators $X$ on $\C^D$ put
+\[
+ T_U(X)=\Tr_A\bigl[U(\tau_d\otimes X)U^*\bigr],\qquad
+ M_U(X)=\Tr_{AR}\bigl[(E\otimes I_D)(U\otimes I_R)(\ket{\Omega_d}\bra{\Omega_d}\otimes X)(U\otimes I_R)^*\bigr],
+\]
+where $A$ carries the input and output, $R$ is the reference, and $E$ acts on $A\otimes R$. Both maps are completely positive, $T_U$ is unital and trace preserving, and $T_U-M_U$ is completely positive. For a state $\rho$, $\Tr M_U(\rho)=\Tr[E\,J(\Psi_{U,\rho})]$ is the pass probability of the round channel $\Psi_{U,\rho}(X)=\Tr_D[U(X\otimes\rho)U^*]$. Let $\tilde\rho_x$ be the subnormalized register operator after the records $x\in\{0,1\}^k$. Each input is fresh and each output and reference leave after the measurement, so
+\[
+ \tilde\rho_{x1}=M_{U_{k+1}}(\tilde\rho_x),\qquad\tilde\rho_{x0}=(T_{U_{k+1}}-M_{U_{k+1}})(\tilde\rho_x),\qquad\Prob(x)=\Tr\tilde\rho_x.
+\]
+
+\begin{lemma}[Tracialization on projections]\label{lem:proj}
+For every $U\in U(dD)$ and all rank-$k$ projections $P,P''$ on $\C^D$,
+\[
+ \Tr[P\,M_U^*(I)]\le k\,p_0+\Tr\bigl[(I-P'')\,T_U(P)\bigr],\qquad
+ \Tr[P\,M_U(I)]\le k\,p_0+\Tr\bigl[T_U^*(P)\,(I-P'')\bigr].
+\]
+\end{lemma}
+
+\begin{proof}
+For the first inequality write $\Tr[PM^*(I)]=\Tr M(P)$ and split the identity of the register on the output side as $P''+(I-P'')$. Since $E\le I$, the part with $I-P''$ is at most $\Tr[(I-P'')T(P)]$. The part with $P''$ equals $k\Tr[E\,J(\Gamma)]$, where $\Gamma(X)=\Tr_k[A(X\otimes\tau_k)A^*]$ and $A=(I\otimes P'')U(I\otimes P)$ is a contraction between two copies of $\C^d\otimes\C^k$. Write $A=VH$ in polar form with $V$ unitary, and put $W_\pm=V(H\pm i\sqrt{I-H^2})$. These are unitaries, and the average of the two finite tracial channels $X\mapsto\Tr_k[W_\pm(X\otimes\tau_k)W_\pm^*]$ is $\Gamma+\Gamma'$, where $\Gamma'(X)=\Tr_k[V\sqrt{I-H^2}(X\otimes\tau_k)\sqrt{I-H^2}V^*]$ is completely positive; the cross terms cancel. The average lies in $\K_d$, so $\Tr[E\,J(\Gamma)]\le\Tr[E\,J(\Gamma+\Gamma')]\le p_0$.
+
+For the second inequality split the identity on the input side: $\Tr[PM(I)]=\Tr[PM(P'')]+\Tr[PM(I-P'')]$. The second term is at most $\Tr[P\,T(I-P'')]=\Tr[T^*(P)(I-P'')]$, and the first is $k\Tr[E\,J(\Gamma)]\le kp_0$ as before, now with $A=(I\otimes P)U(I\otimes P'')$.
+\end{proof}
+
+\begin{lemma}[Energy inequality at a margin]\label{lem:margin-energy}
+Let $\eta>0$ and $p=p_0+\eta$. For every $U\in U(dD)$ and every $X\ge0$ on $\C^D$,
+\[
+ \Tr\bigl[X^2(M_U^*(I)-p)\bigr]\le\frac{\norm X_2^2-\norm{T_UX}_2^2}{2\eta},\qquad
+ \Tr\bigl[X^2(M_U(I)-p)\bigr]\le\frac{\norm X_2^2-\norm{T_U^*X}_2^2}{2\eta}.
+\]
+\end{lemma}
+
+\begin{proof}
+Write $X=\sum_ix_i\ket{e_i}\bra{e_i}$ and $T(X)=\sum_jy_j\ket{f_j}\bra{f_j}$ with both spectra in decreasing order, and let $P_k$ and $P''_k$ project onto the first $k$ vectors of the two bases. The matrix $w_{ji}=\bra{f_j}T(\ket{e_i}\bra{e_i})\ket{f_j}$ is doubly stochastic and $y=wx$. Since $X^2=\sum_k(x_k^2-x_{k+1}^2)P_k$ with $x_{D+1}=0$, and $\sum_kk(x_k^2-x_{k+1}^2)=\norm X_2^2$, Lemma~\ref{lem:proj} gives
+\[
+ \Tr[X^2(M^*(I)-p_0)]\le\sum_k(x_k^2-x_{k+1}^2)\sum_{i\le k<j}w_{ji}=\sum_{i<j}w_{ji}(x_i^2-x_j^2)=\frac12\sum_{i,j}w_{ji}\,|x_i^2-x_j^2|,
+\]
+the last step because $\sum_{i,j}w_{ji}(x_i^2-x_j^2)=0$. By Cauchy--Schwarz, with $\sum_{i,j}w_{ji}(x_i\mp x_j)^2=2(\norm x^2\mp\langle x,y\rangle)$,
+\[
+ \frac12\sum_{i,j}w_{ji}|x_i-x_j|(x_i+x_j)\le\sqrt{\norm x^4-\langle x,y\rangle^2}.
+\]
+The vector $y=wx$ is majorized by $x$ and both are decreasing, so the partial sums $s_k=\sum_{j\le k}(x_j-y_j)$ are nonnegative and $s_D=0$. Summation by parts gives $\langle x-y,y\rangle=\sum_ks_k(y_k-y_{k+1})\ge0$, with $y_{D+1}=0$. Hence $\langle x,y\rangle\ge\norm y^2$ and
+\[
+ \sqrt{\norm x^4-\langle x,y\rangle^2}\le\sqrt{(\norm x^2-\norm y^2)(\norm x^2+\norm y^2)}\le\norm x\sqrt{2(\norm x^2-\norm y^2)}.
+\]
+With $u=\norm X_2$ and $\ell=\norm X_2^2-\norm{T(X)}_2^2$ this reads $\Tr[X^2(M^*(I)-p)]\le u\sqrt{2\ell}-\eta u^2\le\ell/(2\eta)$. The second inequality is proved in the same way from the second part of Lemma~\ref{lem:proj}, with $T^*$ in place of $T$.
+\end{proof}
+
+\begin{lemma}[Hilbert--Schmidt contraction]\label{lem:hs}
+Let $p=p_0+\eta$ and $0<t\le\ln(1+\eta)$, and put $a=pe^{t(1-p)}+(1-p)e^{-tp}$ and $L_U=e^{t(1-p)}M_U+e^{-tp}(T_U-M_U)$. Then $\norm{L_U(X)}_2\le a\norm X_2$ for every $U\in U(dD)$ and every $X\ge0$.
+\end{lemma}
+
+\begin{proof}
+Put $S=M-pT$ and $v=(e^t-1)/(1+p(e^t-1))$. Then $L=a(T+vS)$, and $T+vS=(1-vp)(T-M)+(1-vp+v)M$ is completely positive because $vp<1$. Since $(T+vS)(X)\ge0$, it suffices to show $\Tr[Z(T+vS)(X)]\le1$ for $X,Z\ge0$ with $\norm X_2=\norm Z_2=1$. Write $X=\sum_ix_i\ket{e_i}\bra{e_i}$ and $Z=\sum_jz_j\ket{f_j}\bra{f_j}$, let $c_{ji}$ and $m_{ji}$ be the matrix elements $\bra{f_j}T(\ket{e_i}\bra{e_i})\ket{f_j}$ and $\bra{f_j}M(\ket{e_i}\bra{e_i})\ket{f_j}$, and put $s=m-pc\ge-pc$. Then $\sum_js_{ji}=\bra{e_i}M^*(I)-p\ket{e_i}$ and $\sum_is_{ji}=\bra{f_j}M(I)-p\ket{f_j}$, so $2xz=x^2+z^2-(x-z)^2$ gives
+\[
+ 2\Tr[Z\,S(X)]=\Tr[X^2(M^*(I)-p)]+\Tr[Z^2(M(I)-p)]-\sum_{i,j}s_{ji}(x_i-z_j)^2.
+\]
+Put $b=\sum_{i,j}c_{ji}(x_i-z_j)^2=2-2\Tr[Z\,T(X)]$. Since $\Tr[Z\,T(X)]\le\min(\norm{T(X)}_2,\norm{T^*(Z)}_2)\le1$, we have $b\ge2(1-\norm{T(X)}_2)\ge1-\norm{T(X)}_2^2$, and likewise $b\ge1-\norm{T^*(Z)}_2^2$. Lemma~\ref{lem:margin-energy} and $s\ge-pc$ therefore give $2\Tr[Z\,S(X)]\le b/\eta+pb$, and
+\[
+ \Tr[Z(T+vS)(X)]\le1-\frac b2+\frac{vb}2\Bigl(\frac1\eta+p\Bigr)\le1,
+\]
+because $v(1/\eta+p)\le1$ is equivalent to $e^t-1\le\eta$.
+\end{proof}
+
+\begin{proposition}[Exponential moment]\label{prop:moment}
+With $\eta$, $p$, $t$ and $a$ as in Lemma~\ref{lem:hs}, every service satisfies $\E\,e^{t(S_n-np)}\le2^{B_2/2}a^n$.
+\end{proposition}
+
+\begin{proof}
+Expanding over the records, $\E\,e^{t(S_n-np)}=\sum_xe^{t(|x|-np)}\Tr\tilde\rho_x=\Tr[L_{U_n}\cdots L_{U_1}(\Omega)]$. Each $L_{U_k}$ preserves positivity, so Lemma~\ref{lem:hs} applies at every step, and
+\[
+ \Tr[L_{U_n}\cdots L_{U_1}(\Omega)]\le\sqrt D\,\norm{L_{U_n}\cdots L_{U_1}(\Omega)}_2\le\sqrt D\,a^n\norm\Omega_2=a^n\bigl(D\Tr\Omega^2\bigr)^{1/2}.\qedhere
+\]
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:strong}]
+Take $\eta=\Delta/3$, $t=\ln(1+\Delta/3)$, and the event $A=\{S_n\ge(p_0+3\Delta/4)n\}$. Since $\ln(1+u)\ge u-u^2/2$ and $\Delta\le1$, we have $5\Delta/18\le t\le\Delta/3$. Hoeffding's lemma gives $\ln a\le t^2/8$, so Markov's inequality and Proposition~\ref{prop:moment} give
+\[
+ \Prob_{\rm real}(A)\le e^{-t(3\Delta/4-\Delta/3)n}\,\E\,e^{t(S_n-np)}\le2^{B_2/2}\exp\Bigl(n\Bigl(\frac{t^2}8-\frac{5\Delta t}{12}\Bigr)\Bigr).
+\]
+The coefficient $t^2/8-5\Delta t/12$ decreases on $[0,5\Delta/3]$, so on $[5\Delta/18,\Delta/3]$ it is at most its value at $5\Delta/18$, which is $-275\Delta^2/2592<-\Delta^2/10$. In the ideal experiment Hoeffding's inequality gives $\Prob_{\rm ideal}(A^c)\le e^{-2n(\Delta/4)^2}=e^{-n\Delta^2/8}$. Hence
+\[
+ 1-\eps\le\Prob_{\rm real}(A)+\Prob_{\rm ideal}(A^c)\le2^{B_2/2}e^{-275n\Delta^2/2592}+e^{-n\Delta^2/8},
+\]
+which proves (a). For (b) let $x=\Prob_{\rm real}(A)$, and let $y$ be the probability of $A$ when the same unitaries act on the register in the state $\tau_D$. The bound on $\Prob_{\rm real}(A)$ above, applied with $\Omega=\tau_D$ and so $B_2=0$, gives $y\le e^{-275n\Delta^2/2592}$. The event $A$ is the output of a fixed channel applied to the register's initial state, so data processing for relative entropy gives
+\[
+ B=D(\Omega\|\tau_D)\ge x\log\frac xy+(1-x)\log\frac{1-x}{1-y}\ge x\log\frac1y-h_2(x)\ge x\log\frac1y-1.
+\]
+Hence $x\le(B+1)/\log(1/y)\le(2592\ln2/275)(B+1)/(n\Delta^2)\le6.6(B+1)/(n\Delta^2)$, and (b) follows as (a) did. Finally, with maximally mixed imports $B_2\le Q$. If $n\ge8\Delta^{-2}\ln(2/(1-\eps))$ then $e^{-n\Delta^2/8}\le(1-\eps)/2$, so (a) gives $2^{Q/2}e^{-275n\Delta^2/2592}\ge(1-\eps)/2$, that is,
+\[
+ Q\ge\frac{275\log e}{1296}\,n\Delta^2-2\log\frac2{1-\eps},
+\]
+and $275\log e/1296>0.306$. This is the memory bound of Theorem~\ref{thm:strong}.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:spot}]
+Use the test $E$ and the notation above. The observer draws addresses $a_1,\dots,a_k$ uniformly from $\{1,\dots,n\}$, independently and before the experiment. In each round that appears among the addresses it sends half of a fresh $\ket{\Omega_d}$ and measures $\{E,I-E\}$ on the output and the reference; in every other round it sends $\tau_d$. It counts the passes $Z$ at the addresses, with multiplicity, and accepts when $Z\ge(p_0+7\Delta/8)k$.
+
+Compare with the observer of the proof of Theorem~\ref{thm:strong}, which tests every round, and let $H$ be its number of passes. In each round the device's input is $\tau_d$ in both experiments. A reference that is never measured may be discarded, which leaves the input exactly $\tau_d$, and the tests act only on released systems, so their timing does not matter. Hence, for every service, the outcomes at the addresses have the joint law of the corresponding entries of the full record, with addresses independent of that record, and conditional on the record $Z$ is binomial with parameters $k$ and $H/n$.
+
+In the real experiment, $H\ge(p_0+3\Delta/4)n$ has probability at most the bounds on $\Prob_{\rm real}(A)$ obtained above; otherwise acceptance has probability at most $e^{-2k(\Delta/8)^2}\le e^{-k\Delta^2/128}$, by Hoeffding's inequality. In the ideal experiment $H$ is binomial with parameters $n$ and $p_0+\Delta$, so $H<(p_0+15\Delta/16)n$ has probability at most $e^{-n\Delta^2/128}$; otherwise rejection has probability at most $e^{-2k(\Delta/16)^2}=e^{-k\Delta^2/128}$. Since $1-D=\Prob_{\rm real}(\text{accept})+\Prob_{\rm ideal}(\text{reject})$, the displayed bounds follow.
+
+For the last claim, $D\le\eps$, because the error is a supremum over observers. With the stated $k$ and $n$ the last two terms total at most $2(1-\eps)/3$, so $6.6(B+1)/(n\Delta^2)\ge(1-\eps)/3$, which gives $B\ge(1-\eps)n\Delta^2/19.8-1$.
+\end{proof}
+
+The script \texttt{verify/check\_strong\_converse.py} checks the constants above in exact arithmetic and tests Lemmas~\ref{lem:proj}--\ref{lem:hs} and Proposition~\ref{prop:moment} numerically on random contacts for qubit tests, where $\K_2$ is the set of unital qubit channels and $p_0$ is an exact semidefinite program; it supports but does not replace the proof.
+
 \paragraph{AI assistance.}
 AI systems assisted with mathematical exploration, proof reconstruction, exact-certificate checks and manuscript preparation. The authors take responsibility for the content.
-
 
 
 \begin{thebibliography}{99}
 \bibitem{AnantharamanDelaroche} C.~Anantharaman-Delaroche, On ergodic theorems for free group actions on noncommutative spaces, Probab. Theory Related Fields \textbf{135} (2006), 520--546; \href{https://doi.org/10.1007/s00440-005-0456-1}{doi:10.1007/s00440-005-0456-1}.
 \bibitem{BMZ} A.~Bhattacharyya, A.~Mehta and Y.~Zhao, On the undecidability of quantum channel capacities, FOCS 2026; \href{https://arxiv.org/abs/2601.22471}{arXiv:2601.22471}.
+\bibitem{BoumanFehr} N.~J.~Bouman and S.~Fehr, Sampling in a quantum population, and applications, in \emph{Advances in Cryptology -- CRYPTO 2010}, Lecture Notes in Comput. Sci. \textbf{6223}, Springer, 2010, pp.~724--741; \href{https://arxiv.org/abs/0907.4246}{arXiv:0907.4246}.
 \bibitem{BHLP} F.~G.~S.~L.~Brand\~ao, A.~W.~Harrow, J.~R.~Lee and Y.~Peres, Adversarial hypothesis testing and a quantum Stein's lemma for restricted measurements, IEEE Trans. Inf. Theory \textbf{66} (2020), 5037--5054; \href{https://arxiv.org/abs/1308.6702}{arXiv:1308.6702}.
 \bibitem{CopePirandola} T.~Cope and S.~Pirandola, Adaptive estimation and discrimination of Holevo--Werner channels, Quantum Measurements and Quantum Metrology \textbf{4} (2017), 44--52; \href{https://arxiv.org/abs/1801.05441}{arXiv:1801.05441}.
 \bibitem{CoudronSlofstra} M.~Coudron and W.~Slofstra, Complexity lower bounds for computing the approximately-commuting operator value of non-local games to high precision; \href{https://arxiv.org/abs/1905.11635}{arXiv:1905.11635} (2019).

@@ -2,7 +2,7 @@
   "title": "No algorithm can tell how much memory a repeated quantum channel needs",
   "upload_type": "publication",
   "publication_type": "preprint",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "creators": [
     {
       "name": "Douglas, Seth"
@@ -11,7 +11,7 @@
       "name": "Mghirbi, Nidhal"
     }
   ],
-  "description": "<p>A device that applies a quantum channel over and over must release each output before the next input arrives. How much memory does it need? Suppose every fresh qubit the device receives is maximally mixed. In companion work we showed that the answer then turns on one set: the channels that a unitary with a finite, maximally mixed bath implements, exactly or in the limit. A channel in this set with a flat probe, an input that leaves its environment maximally mixed, can be served with sublinear memory. A channel outside the set needs linear memory at small error, however many qubits the device exchanges.</p><p>No algorithm can decide on which side of this line a channel lies. A computable map sends each program to an explicit Schur channel with Gaussian-rational entries. If the program halts, logarithmic memory suffices; if it runs forever, linear memory is needed at an error computed from the program. The same line recasts Connes' embedding problem. It has a positive answer exactly when every factorizable channel with a flat probe can be served with sublinear memory; Schur channels already suffice.</p><p>Just past the line, the cost switches on at the statistical scale. Take the qutrit Werner-Holevo family at distance h/sqrt(n) beyond its boundary point. Independent uses of the boundary channel imitate it with error tending to 2 Phi(h/(2 sigma)) - 1, where Phi is the standard normal distribution function and sigma = 5 sqrt(2)/27. We prove that no device drawing on purity that grows more slowly than sqrt(n) does better, whatever its memory.</p><p>This archive includes the paper, its LaTeX source, an exact certificate and the finite numerical checks; they support but do not replace the proofs.</p>",
+  "description": "<p>A device that applies a quantum channel over and over must release each output before the next input arrives. How much memory does it need? Suppose every fresh qubit the device receives is maximally mixed. In companion work we showed that the answer then turns on one set: the channels that a unitary with a finite, maximally mixed bath implements, exactly or in the limit. A channel in this set with a flat probe, an input that leaves its environment maximally mixed, can be served with sublinear memory. A channel outside the set needs linear memory at small error, however many qubits the device exchanges. Here we prove a strong converse: outside the set, a device with sublinear memory fails with probability tending to one.</p><p>No algorithm can decide on which side of this line a channel lies. A computable map sends each program to an explicit Schur channel with Gaussian-rational entries. If the program halts, logarithmic memory suffices; if it runs forever, linear memory is needed at every fixed error, for example 1/2. The same line recasts Connes' embedding problem. It has a positive answer exactly when every factorizable channel with a flat probe can be served with sublinear memory; Schur channels already suffice.</p><p>Just past the line, the cost switches on at the statistical scale. Take the qutrit Werner-Holevo family at distance h/sqrt(n) beyond its boundary point. Independent uses of the boundary channel imitate it with error tending to 2 Phi(h/(2 sigma)) - 1, where Phi is the standard normal distribution function and sigma = 5 sqrt(2)/27. We prove that no device drawing on purity that grows more slowly than sqrt(n) does better, whatever its memory.</p><p>This archive includes the paper, its LaTeX source, an exact certificate and the finite numerical checks; they support but do not replace the proofs.</p>",
   "keywords": [
     "quantum channels",
     "quantum memory",
@@ -42,6 +42,10 @@
     },
     {
       "identifier": "https://arxiv.org/abs/2609.18267",
+      "relation": "cites"
+    },
+    {
+      "identifier": "https://arxiv.org/abs/0907.4246",
       "relation": "cites"
     }
   ]

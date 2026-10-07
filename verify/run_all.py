@@ -28,6 +28,8 @@ RUNS = [
     ("check_six_level.py", [], "Thm 6(b), (13), (14), (16)",
      "six-level ray, moment inequality, supporting bound on general contacts"),
     ("check_fuel_constants.py", [], "Thm 6(a), App E.2", "fuel contact: A, Delta_*, d_*, c_* < 19.897 (exact)"),
+    ("check_strong_converse.py", [], "Thm 7, Prop 8.1, Cor 8.2, App G",
+     "constants (exact); Lemmas G.1-G.3 and Prop G.4 on qubit tests; coin device"),
 ]
 
 

@@ -132,7 +132,12 @@ def main(perturb=False):
     assert gap - eta - epsilon == gap / 2
     approximation_error, threshold = gap**2 / 16, gap**2 / 8
     assert approximation_error < threshold < gap**2 / 4 - approximation_error
-    print("PASS: full-rank perturbation and numerical-rate decision thresholds.")
+    # Version 1.1, at every fixed error (Theorem 7): rate 0 or >= 3 g^2/10; within g^2/8 against the threshold 3 g^2/20.
+    approximation_error, threshold = gap**2 / 8, 3 * gap**2 / 20
+    assert approximation_error < threshold < 3 * gap**2 / 10 - approximation_error
+    # Remark 4.4 in version 1.1: distance 3g/4 gives coefficient 0.3 * 9/16 > 0.16 and onset 8 * 16/9 < 15.
+    assert F(3, 10) * F(9, 16) > F(16, 100) and 8 * F(16, 9) < 15
+    print("PASS: full-rank perturbation and numerical-rate decision thresholds (small-error and fixed-error forms).")
     print("Scope: arithmetic only; no hard channel, MIP*, hierarchy or all-dimensional numerical test.")
     print("PASS")
 
