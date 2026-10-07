@@ -3,7 +3,7 @@ message: "Please cite the manuscript; this repository supplies its source and ve
 type: software
 title: "No algorithm can tell how much memory a repeated quantum channel needs"
 version: 1.1.0
-doi: 10.5281/zenodo.23199340
+doi: 10.5281/zenodo.23204398
 license:
   - CC-BY-4.0
   - MIT
@@ -24,6 +24,6 @@ preferred-citation:
       given-names: Nidhal
   year: 2026
   version: 1.1.0
-  doi: 10.5281/zenodo.23199340
+  doi: 10.5281/zenodo.23204398
   notes: "Preprint with accompanying verification scripts; see RIGHTS.md for license scope. Concept DOI of all versions: 10.5281/zenodo.23199340; version 1.0.0: 10.5281/zenodo.23199341."
-  url: "https://doi.org/10.5281/zenodo.23199340"
+  url: "https://doi.org/10.5281/zenodo.23204398"
